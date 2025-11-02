@@ -1,13 +1,12 @@
-{
-  "class_id": 1,
-  "class_name": "Lớp 10A1 - Toán Chuyên",
-  "teacher_name": "Nguyễn Văn A",
-  "school_year": "2025-2026",
+[{
+  "lesson_id": 101,
+  "lesson_name": "Bài học tổng hợp về Mệnh đề, Tập hợp, Hàm số và Vector",
   
   "assignment_batches": [
     {
       "batch_id": 1,
       "batch_name": "Batch 1: Ôn tập Chương 1 (Cơ bản)",
+      "target_student": "học sinh cả lớp",
       
       "recognition": 5,
       "understanding": 3,
@@ -71,6 +70,7 @@
     {
       "batch_id": 2,
       "batch_name": "Batch 2: Chuyên đề Hàm số và Vector (Nâng cao)",
+      "target_student": "học sinh giỏi",
       
       "recognition": 1,
       "understanding": 3,
@@ -131,3 +131,4 @@
     }
   ]
 }
+]

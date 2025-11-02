@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết Hợp Bảng Đề Xuất (Biến Đã Cập Nhật)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Cấu hình Tailwind (từ tệp knowledge-content.html)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#002277',
+                        'secondary': '#131523',
+                        'muted': '#5a607f',
+                        'border': '#e2e8f0',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <div class="flex w-full min-h-screen">
+
+        <div class="w-2/12 p-4 border-r bg-white min-h-screen">
+            <div class="mb-4">
+                <h1 class="text-base font-bold text-black uppercase tracking-wide">
+                    Nội Dung Kiến Thức
+                </h1>
+            </div>
+            <div id="content-placeholder" class="space-y-4">
+                </div>
+        </div>
+
+        <div class="w-10/12 p-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-semibold text-gray-900 mb-2">Bảng Đề Xuất Đề Thi</h1>
+                    <p class="text-gray-600">Quản lý và phân bổ câu hỏi theo mức độ nhận thức</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-900 border-r border-gray-200 min-w-[60px] align-middle"
+                                        rowspan="2">
+                                        STT
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-900 border-r border-gray-200 align-middle"
+                                        rowspan="2">
+                                        Nội dung kiến thức
+                                    </th>
+                                    <th class="px-4 py-3 text-center text-sm font-medium text-gray-900 border-r border-gray-200"
+                                        colspan="3">
+                                        Mức độ nhận thức
+                                    </th>
+                                    <th class="px-4 py-3 text-center text-sm font-medium text-gray-900 border-r border-gray-200"
+                                        colspan="4">
+                                        Số câu hỏi
+                                    </th>
+                                    <th class="px-4 py-3 text-center text-sm font-medium text-gray-900 min-w-[71px] align-middle"
+                                        rowspan="2">
+                                        Tổng điểm
+                                    </th>
+                                </tr>
+                                <tr class="bg-gray-25 border-t border-gray-200">
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Nhận biết
+                                    </td>
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Thông hiểu
+                                    </td>
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Vận dụng
+                                    </td>
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Trắc nghiệm
+                                    </td>
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Tự luận
+                                    </td>
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Đúng sai
+                                    </td>
+                                    <td class="px-3 py-2 text-center text-xs font-medium text-gray-700 border-r border-gray-200">
+                                        Điền từ
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                            </tbody>
+                            <tfoot class="bg-gray-50 border-t-2 border-gray-300">
+                                <tr class="font-bold text-gray-900">
+                                    <td class="px-4 py-3 text-right" colspan="2">
+                                        TỔNG CỘNG
+                                    </td>
+                                    <td id="total-recognition"
+                                        class="px-3 py-3 text-center text-sm border-l border-gray-200">0</td>
+                                    <td id="total-understanding"
+                                        class="px-3 py-3 text-center text-sm border-l border-gray-200">0</td>
+                                    <td id="total-application"
+                                        class="px-3 py-3 text-center text-sm border-l border-r border-gray-200">0</td>
+                                    <td id="total-multiple_choice"
+                                        class="px-3 py-3 text-center text-sm border-l border-gray-200">0</td>
+                                    <td id="total-essay"
+                                        class="px-3 py-3 text-center text-sm border-l border-gray-200">0</td>
+                                    <td id="total-true_false"
+                                        class="px-3 py-3 text-center text-sm border-l border-gray-200">0</td>
+                                    <td id="total-fill_in_blank"
+                                        class="px-3 py-3 text-center text-sm border-l border-r border-gray-200">0</td>
+                                    <td id="total-total_points" class="px-4 py-3 text-center text-sm">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
+                    <button
+                        class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        Hủy
+                    </button>
+                    <button
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- NGUỒN DỮ LIỆU ---
+
+        // Dữ liệu cho BÊN TRÁI (Nguồn, cấu trúc lồng nhau)
+        const knowledgeSourceData = [
+            {
+                "chapter_id": 1,
+                "chapter": "DỰ ÁN: ALPHA",
+                "chapter_name": "TRIỂN KHAI HỆ THỐNG QUẢN LÝ KHÁCH HÀNG (CRM)",
+                "lessons": [
+                    {
+                        "lesson_id": 1,
+                        "lesson_name": "Giai đoạn 1: Khởi tạo & Phân tích",
+                        "knowledge_units": [ 
+                            {
+                                "knowledge_id": 1, 
+                                "description": "Tổ chức họp khởi động (kick-off) với các bên liên quan."
+                            },
+                            {
+                                "knowledge_id": 2, 
+                                "description": "Thu thập và tài liệu hóa các yêu cầu nghiệp vụ (Business Requirements)."
+                            }
+                        ]
+                    },
+                    {
+                        "lesson_id": 2,
+                        "lesson_name": "Giai đoạn 2: Thiết kế & Phát triển",
+                        "knowledge_units": [ 
+                            {
+                                "knowledge_id": 4, 
+                                "description": "Thiết kế kiến trúc hệ thống và mô hình cơ sở dữ liệu."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Dữ liệu cho BÊN PHẢI (Đích, cấu trúc phẳng, bắt đầu rỗng)
+        // *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+        let knowledge_components = []; // <-- ĐÃ ĐỔI TÊN TỪ examTableData
+
+        // --- CÁC HÀM CHO BÊN TRÁI (KNOWLEDGE CONTENT) ---
+
+        /**
+         * Render toàn bộ nội dung cây kiến thức bên trái
+         */
+        function renderKnowledgeContent() {
+            const container = document.getElementById('content-placeholder');
+            if (!container) return;
+
+            let allHtmlContent = '';
+
+            knowledgeSourceData.forEach(chapter => {
+                const chapterTextId = `text-chapter-${chapter.chapter_id}`;
+                const chapterContentId = `content-chapter-${chapter.chapter_id}`;
+
+                let lessonsHtml = '';
+                chapter.lessons.forEach(lesson => {
+                    const lessonTextId = `text-lesson-${lesson.lesson_id}`;
+                    const lessonContentId = `content-lesson-${lesson.lesson_id}`;
+
+                    let knowledgeHtml = '';
+                    
+                    lesson.knowledge_units.forEach(content => {
+                        const knowledgeTextId = `text-knowledge-${content.knowledge_id}`; 
+                        
+                        knowledgeHtml += `
+                        <div class="flex gap-2 items-start">
+                            <div class="flex items-center mt-0.5">
+                                <input type="checkbox" 
+                                    data-target-text="${knowledgeTextId}"
+                                    data-type="knowledge"
+                                    data-chapter-id="${chapter.chapter_id}"
+                                    data-lesson-id="${lesson.lesson_id}"
+                                    data-knowledge-id="${content.knowledge_id}"
+                                    data-content="${content.description}"
+                                    class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
+                            </div>
+                            <p id="${knowledgeTextId}" class="text-sm font-medium text-black leading-5">
+                                ${content.description}
+                            </p>
+                        </div>
+                        `;
+                    });
+
+
+                    lessonsHtml += `
+                    <div class="space-y-3">
+                        <div class="lesson flex items-center justify-between cursor-pointer" data-toggle-target="#${lessonContentId}">
+                            <div class="flex gap-2 items-center">
+                                <div class="flex items-center mt-0.5">
+                                    <input type="checkbox" 
+                                        data-target-text="${lessonTextId}"
+                                        data-type="lesson"
+                                        data-chapter-id="${chapter.chapter_id}"
+                                        data-lesson-id="${lesson.lesson_id}"
+                                        data-knowledge-id="" 
+                                        data-content="${lesson.lesson_name}"
+                                        class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
+                                </div>
+                                <p id="${lessonTextId}" class="text-base font-medium text-black">${lesson.lesson_name}</p>
+                            </div>
+                            <div class="w-6 h-6 flex-shrink-0">
+                                <svg class="w-full h-full text-black rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="${lessonContentId}" class="hidden space-y-3 ml-8">
+                            ${knowledgeHtml}
+                        </div>
+                    </div>
+                    `;
+                });
+
+
+                allHtmlContent += `
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="chapter p-4 cursor-pointer" data-toggle-target="#${chapterContentId}">
+                        <h2 class="text-base font-bold text-black mb-2">${chapter.chapter}</h2>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 flex-1">
+                                <input type="checkbox" 
+                                    data-target-text="${chapterTextId}"
+                                    data-type="chapter"
+                                    data-chapter-id="${chapter.chapter_id}"
+                                    data-lesson-id=""
+                                    data-knowledge-id=""
+                                    data-content="${chapter.chapter_name}"
+                                    class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
+                                <p id="${chapterTextId}" class="text-base font-medium text-black leading-5 flex-1">
+                                    ${chapter.chapter_name}
+                                </p>
+                            </div>
+                            <div class="w-6 h-6 flex-shrink-0">
+                                <svg class="w-full h-full text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="${chapterContentId}" class="chapter-content hidden px-4 pb-4 space-y-4">
+                        ${lessonsHtml}
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = allHtmlContent;
+
+            // Gắn sự kiện bung/thu gọn
+            addToggleListeners();
+            // Gắn sự kiện cho checkbox
+            addKnowledgeCheckboxListeners();
+        }
+
+        /**
+         * Gắn sự kiện bung/thu gọn cho Chapter và Lesson
+         */
+        function addToggleListeners() {
+            // Logic bung/thu gọn Chapter
+            document.querySelectorAll(".chapter").forEach(chapter => {
+                chapter.addEventListener("click", () => {
+                    const targetId = chapter.dataset.toggleTarget;
+                    if (!targetId) return;
+                    const content = document.querySelector(targetId);
+                    if (content) {
+                        content.classList.toggle("hidden");
+                        const iconPath = chapter.querySelector("svg path");
+                        if (iconPath) {
+                            const isHidden = content.classList.contains("hidden");
+                            iconPath.setAttribute("d", isHidden ? "M19 9l-7 7-7-7" : "M5 15l7-7 7 7");
+                        }
+                    }
+                });
+            });
+
+            // Logic bung/thu gọn Lesson
+            document.querySelectorAll(".lesson").forEach(lesson => {
+                lesson.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const targetId = lesson.dataset.toggleTarget;
+                    if (!targetId) return;
+                    const content = document.querySelector(targetId);
+                    if (content) {
+                        content.classList.toggle("hidden");
+                        const icon = lesson.querySelector("svg");
+                        if (icon) {
+                            icon.classList.toggle("rotate-180");
+                        }
+                    }
+                });
+            });
+        }
+
+        /**
+         * Gắn sự kiện 'change' cho các checkbox bên trái
+         */
+        function addKnowledgeCheckboxListeners() {
+            document.querySelectorAll('#content-placeholder input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', handleKnowledgeCheckboxChange);
+                
+                checkbox.addEventListener('click', (e) => {
+                   e.stopPropagation(); 
+                });
+            });
+        }
+
+        /**
+         * HÀM "CẦU NỐI"
+         * Xử lý khi checkbox bên trái thay đổi
+         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+         */
+        function handleKnowledgeCheckboxChange(event) {
+            const checkbox = event.target;
+            const isChecked = checkbox.checked;
+            
+            const chapterId = checkbox.dataset.chapterId;
+            const lessonId = checkbox.dataset.lessonId || null; 
+            const knowledgeId = checkbox.dataset.knowledgeId || null; 
+            const content = checkbox.dataset.content;
+
+            // Xử lý đổi màu text bên trái
+            const targetTextId = checkbox.dataset.targetText;
+            if (targetTextId) {
+                const textElement = document.getElementById(targetTextId);
+                if (textElement) {
+                    textElement.classList.toggle('text-green-600', isChecked);
+                    textElement.classList.toggle('text-black', !isChecked);
+                }
+            }
+
+            // Xử lý cập nhật dữ liệu bảng bên phải
+            if (isChecked) {
+                const newItem = {
+                    "chapter_id": parseInt(chapterId),
+                    "lesson_id": lessonId ? parseInt(lessonId) : null,
+                    "knowledge_id": knowledgeId ? parseInt(knowledgeId) : null,
+                    "content": content,
+                    "recognition": 0, "understanding": 0, "application": 0,
+                    "multiple_choice": 0, "essay": 0, "true_false": 0, "fill_in_blank": 0,
+                    "total_points": 0
+                };
+                knowledge_components.push(newItem); // <-- ĐÃ ĐỔI TÊN
+            } else {
+                knowledge_components = knowledge_components.filter(item => { // <-- ĐÃ ĐỔI TÊN
+                    const matchChapter = item.chapter_id == chapterId;
+                    const matchLesson = (item.lesson_id || null) == lessonId;
+                    const matchKnowledge = (item.knowledge_id || null) == knowledgeId;
+                    return !(matchChapter && matchLesson && matchKnowledge);
+                });
+            }
+            renderExamTable();
+        }
+
+        // --- CÁC HÀM CHO BÊN PHẢI (EXAM TABLE) ---
+
+        function renderExamTable() {
+            renderTableBody();
+            calculateAndRenderTotals();
+            addTableInputListeners(); 
+        }
+
+        /**
+         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+         */
+        function renderTableBody() {
+            const tableBody = document.getElementById('table-body');
+            if (!tableBody) return;
+
+            let tableRowsHtml = '';
+            let stt = 1;
+
+            knowledge_components.forEach((item, index) => { // <-- ĐÃ ĐỔI TÊN
+                const pathString = `${index}`; 
+                tableRowsHtml += createTableRow(item, stt++, pathString);
+            });
+
+            tableBody.innerHTML = tableRowsHtml;
+        }
+
+        /**
+         * Tạo HTML cho một hàng (tr) của bảng bên phải
+         */
+        function createTableRow(item, stt, pathString) {
+            const description = item.content;
+            
+            const createInput = (property, value) => {
+                return `<input 
+                            type="number" 
+                            min="0" 
+                            class="w-12 text-center border border-gray-300 rounded px-2 py-1 text-xs" 
+                            value="${value}" 
+                            data-path="${pathString}" 
+                            data-property="${property}"
+                        >`;
+            };
+
+            return `
+                <tr class="border-t border-gray-200 hover:bg-gray-50">
+                    <td class="px-4 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${stt}</td>
+                    <td class="px-4 py-3 text-sm border-r border-gray-200">${description}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('recognition', item.recognition)}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('understanding', item.understanding)}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('application', item.application)}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('multiple_choice', item.multiple_choice)}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('essay', item.essay)}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('true_false', item.true_false)}</td>
+                    <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('fill_in_blank', item.fill_in_blank)}</td>
+                    <td class="px-4 py-3 text-center text-sm text-gray-600">${createInput('total_points', item.total_points)}</td>
+                </tr>
+            `;
+        }
+
+        function updateTotals(item, totals) {
+            totals.recognition += item.recognition || 0;
+            totals.understanding += item.understanding || 0;
+            totals.application += item.application || 0;
+            totals.multiple_choice += item.multiple_choice || 0;
+            totals.essay += item.essay || 0;
+            totals.true_false += item.true_false || 0;
+            totals.fill_in_blank += item.fill_in_blank || 0;
+            totals.total_points += item.total_points || 0;
+        }
+
+        /**
+         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+         */
+        function calculateAndRenderTotals() {
+            const totals = {
+                recognition: 0, understanding: 0, application: 0,
+                multiple_choice: 0, essay: 0, true_false: 0, fill_in_blank: 0,
+                total_points: 0
+            };
+
+            knowledge_components.forEach(item => { // <-- ĐÃ ĐỔI TÊN
+                updateTotals(item, totals);
+            });
+
+            document.getElementById('total-recognition').textContent = totals.recognition;
+            document.getElementById('total-understanding').textContent = totals.understanding;
+            document.getElementById('total-application').textContent = totals.application;
+            document.getElementById('total-multiple_choice').textContent = totals.multiple_choice;
+            document.getElementById('total-essay').textContent = totals.essay;
+            document.getElementById('total-true_false').textContent = totals.true_false;
+            document.getElementById('total-fill_in_blank').textContent = totals.fill_in_blank;
+            document.getElementById('total-total_points').textContent = totals.total_points;
+        }
+
+        /**
+         * Xử lý thay đổi input TRÊN BẢNG BÊN PHẢI
+         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+         */
+        function handleTableInputChange(event) {
+            const input = event.target;
+            const pathIndex = input.dataset.path;     
+            const property = input.dataset.property;
+            
+            let newValue = parseInt(input.value) || 0;
+            if (newValue < 0) {
+                newValue = 0;
+                input.value = 0; 
+            }
+
+            const targetObject = knowledge_components[pathIndex]; // <-- ĐÃ ĐỔI TÊN
+
+            if (targetObject) {
+                targetObject[property] = newValue;
+            }
+            
+            calculateAndRenderTotals();
+        }
+
+        /**
+         * Gắn sự kiện cho các input TRÊN BẢNG BÊN PHẢI
+         */
+        function addTableInputListeners() {
+            document.querySelectorAll('#table-body input[type="number"]').forEach(input => {
+                input.addEventListener('input', handleTableInputChange); 
+            });
+        }
+
+        // --- KHỞI CHẠY ---
+        document.addEventListener('DOMContentLoaded', function () {
+            renderKnowledgeContent(); 
+            renderExamTable();        
+        });
+    </script>
+</body>
+</html>

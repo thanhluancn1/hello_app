@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gợi ý đề thi - AronEdu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#1e5eff',
+            'text-primary': '#121212',
+            'text-secondary': '#5a607f',
+            'text-muted': '#a1a7c4',
+            'border-light': '#e6e9f4',
+            'border-medium': '#d9e1ec',
+            'bg-light': '#f5f6fa',
+          },
+          fontFamily: {
+            'roboto': ['Roboto', 'sans-serif'],
+            'inter': ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bg-light min-h-screen">
+
+  <script src="mock_data.js"></script>
+
+
+  <div class="flex flex-col gap-6 items-start relative w-full p-6">
+    
+    <div class="flex items-center justify-between relative w-full">
+      <div class="flex gap-2 items-center">
+        <h1 class="font-roboto font-medium text-2xl text-text-primary whitespace-nowrap">
+          Gợi ý đề thi
+        </h1>
+      </div>
+      
+      <div class="flex gap-3 items-center justify-end">
+        <button class="bg-primary flex gap-1 items-center px-3 py-2 rounded-lg">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span class="font-inter font-normal text-base text-white whitespace-nowrap">
+            Tạo đề từ ma trận
+          </span>
+        </button>
+        
+        <button class="bg-white border border-border-medium flex gap-2 h-10 items-center justify-center px-4 py-3 rounded-lg">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          <span class="font-inter font-normal text-primary text-base whitespace-nowrap">
+            Tải lên đề có sẵn
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div id="suggestion-container" class="flex flex-col gap-4 items-start relative w-full">
+      
+      </div>
+  </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Lấy và parse dữ liệu JSON từ thẻ script
+      const jsonData = exam_suggestion;
+      // Lấy container để chèn nội dung
+      const container = document.getElementById('suggestion-container');
+      container.innerHTML = ''; // Xóa bất kỳ nội dung cũ nào
+
+      // --- Hàm trợ giúp để tạo HTML cho một thẻ học sinh ---
+      function createStudentCardHtml(studentTitle, batch) {
+        // Lấy dữ liệu từ batch nếu tồn tại, nếu không thì mặc định là 0
+        const recognition = batch ? batch.recognition : 0;
+        const understanding = batch ? batch.understanding : 0;
+        const application = batch ? batch.application : 0;
+        // Tạo phụ đề, nếu không có batch thì để trống
+        return `
+        <div class="bg-white border border-border-medium rounded-xl p-4">
+          <div class="flex flex-col gap-3 items-start">
+            <div class="flex flex-col gap-1">
+              <h3 class="font-inter font-medium text-base text-text-primary">
+                ${studentTitle}
+              </h3>
+            </div>
+            
+            <div class="w-full h-px bg-border-light"></div>
+            
+            <p class="font-inter font-medium text-sm text-text-secondary">
+              Số lượng bài tập
+            </p>
+            
+            <div class="flex justify-between items-start w-full text-base">
+              <span class="font-inter font-normal text-text-secondary">Nhận biết:</span>
+              <span class="font-inter font-medium text-text-primary">${recognition} bài</span>
+            </div>
+            <div class="flex justify-between items-start w-full text-base">
+              <span class="font-inter font-normal text-text-secondary">Thông hiểu:</span>
+              <span class="font-inter font-medium text-text-primary">${understanding} bài</span>
+            </div>
+            <div class="flex justify-between items-start w-full text-base">
+              <span class="font-inter font-normal text-text-secondary">Vận dụng:</span>
+              <span class="font-inter font-medium text-text-primary">${application} bài</span>
+            </div>
+          </div>
+        </div>
+        `;
+      }
+
+      // --- Hàm chính để render toàn bộ nội dung ---
+      function renderSuggestions() {
+        // Danh sách 4 loại học sinh mà HTML gốc hiển thị
+        const studentTypes = [
+          'Học sinh cả lớp', 
+          'Học sinh giỏi',
+          'Học sinh khá', 
+          'Học sinh trung bình'
+        ];
+
+        // Lặp qua mỗi "lesson" trong mảng dữ liệu JSON
+        jsonData.forEach(lesson => {
+          let lessonHtml = `
+          <div class="bg-white border border-border-medium rounded-xl p-6 w-full">
+            <div class="flex flex-col gap-3 items-start w-full">
+              <div class="flex font-roboto font-medium gap-2 items-center text-lg text-text-primary w-full">
+                <span>${lesson.lesson_name}</span>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          `;
+
+          // Lặp qua 4 loại học sinh
+          studentTypes.forEach(studentType => {
+            // Tìm batch tương ứng trong 'assignment_batches' của lesson
+            const matchingBatch = lesson.assignment_batches.find(batch => 
+              batch.target_student.toLowerCase() === studentType.toLowerCase()
+            );
+            
+            // Tạo HTML cho thẻ học sinh (dù có tìm thấy batch hay không)
+            lessonHtml += createStudentCardHtml(studentType, matchingBatch);
+          });
+
+          // Đóng các thẻ div
+          lessonHtml += `
+              </div>
+            </div>
+          </div>
+          `;
+          
+          // Chèn HTML của cả khối lesson vào container
+          container.innerHTML += lessonHtml;
+        });
+      }
+
+      // Chạy hàm render
+      renderSuggestions();
+    });
+  </script>
+
+</body>
+</html>
