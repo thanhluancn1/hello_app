@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="{{ url_for('static', filename='js/student_management/index.js') }}"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e5eff',
+                        'text-primary': '#121212',
+                        'text-secondary': '#5a607f',
+                        'text-muted': '#a1a7c4',
+                        'border-light': '#e6e9f4',
+                        'border-medium': '#d9e1ec',
+                        'border-checkbox': '#d7dbec',
+                        'bg-light': '#f5f6fa',
+                        'status-active': '#06a561',
+                        'status-active-bg': '#defef0',
+                        'status-inactive': '#ff5c5c',
+                        'status-inactive-bg': '#ffdfdf'
+                    },
+                    fontFamily: {
+                        'roboto': ['Roboto', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'gilroy': ['Gilroy', 'sans-serif'],
+                        'manrope': ['Manrope', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-light min-h-screen">
+    <!-- Main Container -->
+
+    <header class="bg-white shadow-sm border-b border-border-light h-16 flex items-center justify-between px-6">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <div class="flex items-center">
+                <img src="/static/images/71f227c390f489287c3a010d68ffeef1c50b867d.svg" alt="Logo" class="w-10 h-10 mr-3">
+                <span class="text-xl font-bold font-gilroy text-text-primary">AronEdu</span>
+            </div>
+        </div>
+        
+        <!-- Right Side - Notifications, Chat, User -->
+        <div class="flex items-center space-x-4">
+            <!-- Chat Icon -->
+            <div class="relative">
+                <img src="/static/images/chat.svg" alt="Chat" class="w-6 h-6">
+            </div>
+            
+            <!-- Notifications Icon -->
+            <div class="relative">
+                <img src="/static/images/Bell.svg" alt="Notifications" class="w-6 h-6">
+                <span class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">5</span>
+            </div>
+            
+            <!-- User Profile -->
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <img src="/static/images/95bca3ecaf6d28d115834f85b6163b6e58e91c7c.png" alt="User Avatar" class="w-9 h-9 rounded-full">
+                </div>
+                <span class="text-text-secondary text-sm font-inter">Thanh Luan</span>
+                <img src="/static/images/arrow.svg" alt="Dropdown" class="w-6 h-6">
+            </div>
+        </div>
+    </header>
+
+    <div class="flex h-screen">
+        <!-- Sidebar/Container - Navigation Menu -->
+        <aside class="w-64 bg-white shadow-lg flex-shrink-0">
+            <!-- Sidebar Content -->
+            <div class="p-4 space-y-2">
+                <!-- Dashboard Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/Home.svg" alt="Dashboard" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Trang chủ</span>
+                </div>
+                
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/List.svg" alt="Student Management" class="w-6 h-6 mr-3">
+                    <a href="/classes" class="text-text-secondary text-sm font-inter">Quản lý lớp học</a>
+                </div>
+
+                <div class="flex items-center p-3 rounded bg-primary text-white cursor-pointer">
+                    <img src="/static/images/08 Tag.svg" alt="Class Management" class="w-6 h-6 mr-3">
+                    <a href="/students" class="text-sm font-inter">Quản lý học sinh</a>
+                </div>
+                
+                <!-- Categories Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/01 Folder.svg" alt="Categories" class="w-6 h-6 mr-3">
+                    <a href="/schedules" class="text-text-secondary text-sm font-inter">Quản lý lịch học</a>
+                </div>
+
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/31 Applications.svg" alt="Categories" class="w-6 h-6 mr-3">
+                    <a href="/lessons" class="text-text-secondary text-sm font-inter">Quản lý bài giảng</a>
+                </div>
+                
+                <!-- Customers Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/03 Users.svg" alt="Customers" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Quản lý kho nội dung</span>
+                </div>
+                
+                <!-- Reports Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/09 Statistics.svg" alt="Reports" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Tạo đề thi</span>
+                </div>
+                
+                <!-- Coupons Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/11 Star.svg" alt="Coupons" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Tạo bài tập</span>
+                </div>
+                
+                <!-- Section Divider -->
+                <div class="pt-4">
+                    <p class="text-text-muted text-xs font-inter px-3 mb-2">Báo cáo</p>
+                </div>
+                
+                <!-- Applications Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/31 Applications.svg" alt="Applications" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Thời gian làm việc giáo viên</span>
+                </div>
+                
+                <!-- Knowledge Base Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/03 Question.svg" alt="Knowledge Base" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Phân tích Lớp học</span>
+                </div>
+                
+                <!-- Product Updates Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/29 Ribbon.svg" alt="Product Updates" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Phân tích học sinh</span>
+                </div>
+                
+                <!-- Section Divider -->
+                <div class="pt-4">
+                    <p class="text-text-muted text-xs font-inter px-3 mb-2">Cài đặt</p>
+                </div>
+                
+                <!-- Personal Settings Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/02 User.svg" alt="Personal Settings" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Cài đặt cá nhân</span>
+                </div>
+                
+                <!-- Global Settings Menu Item -->
+                <div class="flex items-center p-3 rounded hover:bg-gray-50 cursor-pointer">
+                    <img src="/static/images/01 Settings.svg" alt="Global Settings" class="w-6 h-6 mr-3">
+                    <span class="text-text-secondary text-sm font-inter">Cài đặt chung</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Page/StudentManagement/Container - Main Content -->
+            <main class="flex-1 p-6 bg-bg-light">
+                
+            </main>
+        </div>
+    </div>
+
+   
+
+</body>
+</html>
