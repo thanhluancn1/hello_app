@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+
+  <script type="module">
+    // --- Nội dung từ: state.js ---
+    let currentKey = '';
+    let currentAssignment = null;
+    let cropper = null;
+
+    let assignments = [];
+
+    let userId = '';
+
+
+    const getCurrentKey = () => currentKey;
+    const getCurrentAssignment = () => currentAssignment;
+    const getCropper = () => cropper;
+
+    const setCurrentKey = (newCurrentKey) => {
+      currentKey = newCurrentKey;
+    };
+
+    const setCurrentAssignment = (newCurrentAssignment) => {
+      currentAssignment = newCurrentAssignment;
+    };
+
+    const setCropper = (newCropper) => {
+      cropper = newCropper;
+    };
+
+    const removeAssignmentById = (assignmentId) => {
+      assignments = assignments.filter(a => a.assignment_id !== parseInt(assignmentId));
+      setAssignments(assignments);
+      return getAssignments();
+    };
+
+
+    const getUserId = () => userId;
+
+    const setUserId = (newUserId) => {
+      userId = newUserId;
+    };
+
+    const getAssignmentById = (assignmentId) => {
+      return assignments.find(a => a.assignment_id === parseInt(assignmentId));
+    };
+
+    const getAssignments = () => [...assignments];
+
+    const setAssignments = (newAssignments) => {
+      assignments = Array.isArray(newAssignments) ? [...newAssignments] : [];
+      return getAssignments();
+    };
+
+    const addAssignment = (assignmentData) => {
+      if (!assignmentData || typeof assignmentData !== 'object') return getAssignments();
+
+      assignments = assignments.filter(a => a.assignment_id !== assignmentData.assignment_id);
+      assignments = [...assignments, assignmentData];
+
+      // ✅ Sắp xếp theo assignment_id (số tăng dần)
+      assignments = assignments.sort((a, b) => (a.assignment_id || 0) - (b.assignment_id || 0));
+
+      return getAssignments();
+    };
+
+
+    // --- Nội dung từ: api.js ---
+    const fetchAssignments = async (userId) => {
+      let assignments = [
+        {
+          assignment_id: 1,
+          question: "Cho hàm số $y = f(x)$ có bảng biến thiên: \n{{img1}}\n\nA. 3\tB. 2\tC. 0\tD. 1",
+          solution_guide: "dựa vào bảng biến thiên xác định số giao điểm $y = f(x)$",
+          answer: "A,B",
+          score: 1,
+          images: { img1: "data:image/jpeg;base64,/9j/4AKKKKAP//Z" }
+        },
+        {
+          assignment_id: 2,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 3,
+          question: "Ví dụ Markdown + code:\n```python\nprint('Hello')\n```",
+          solution_guide: "ví dụ Markdown + code",
+          answer: "C",
+          score: 1,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        },
+        {
+          assignment_id: 4,
+          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
+          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
+          answer: "B",
+          score: 2,
+          images: {}
+        }
+      ];
+
+      return assignments
+
+
+    };
+
+
+    // --- Nội dung từ: ui.js ---
+    const autoResize = (el) => {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    }
+
+    // --- Tạo editor chung ---
+    const createTextarea = (editors, assign, idx) => {
+      const html = `
+      <div class="rounded-lg mb-4 pl-4 pr-4 pb-4 bg-white">
+        <div class="flex items-center w-full text-base bg-white">
+          <div class="flex items-center justify-start flex-[1] py-4 px-2">
+            <span class="text-gray-900 font-bold leading-tight">Câu ${idx + 1}</span>
+          </div>
+  
+          <div class="flex items-center justify-start flex-[2] py-4 px-2 gap-2">
+            <span class="text-gray-500 font-normal leading-tight whitespace-nowrap">Điểm:</span>
+            <input
+              type="number"
+              min="0"
+              step="0.5"
+              value="${assign.score ?? 0}"
+              class="w-16 h-9 px-2 bg-white rounded-lg border border-slate-200 text-gray-900 font-medium leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" data-assignment_id="${assign.assignment_id}" data-type="score"
+            >
+          </div>
+  
+          <div class="flex items-center justify-start flex-[4] py-4 px-2 gap-2">
+            <span class="text-gray-500 font-normal leading-tight whitespace-nowrap">Loại:</span>
+            <select
+              class="flex-1 h-9 px-3 bg-white rounded-lg border border-slate-200 text-gray-900 font-medium leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option ${assign.type === "Trắc nghiệm" ? "selected" : ""}>Trắc nghiệm</option>
+              <option ${assign.type === "Tự luận" ? "selected" : ""}>Tự luận</option>
+              <option ${assign.type === "Đúng/Sai" ? "selected" : ""}>Đúng/Sai</option>
+            </select>
+          </div>
+  
+          <div class="flex items-center justify-center flex-[1] py-4 px-2 cursor-pointer">
+            <button class="text-blue-600 text-sm font-medium leading-tight hover:underline" data-assignment_id="${assign.assignment_id}" data-type="edit">Đổi câu</button>
+          </div>
+  
+          <div class="flex items-center justify-center flex-[1] py-4 px-2 cursor-pointer">
+            <button class="text-blue-600 text-sm font-medium leading-tight hover:underline" data-assignment_id="${assign.assignment_id}" data-type="delete">Xóa</button>
+          </div>
+        </div>
+  
+        <div class="w-full bg-white text-black rounded focus:outline-none">
+          <textarea
+            data-assignment_id="${assign.assignment_id}"
+            data-type="question"
+            class="w-full bg-white border border-slate-300 text-black p-2 rounded focus:outline-none min-h-[60px]"
+            style="overflow:hidden; resize:none;"
+          >${assign.question ?? ""}</textarea>
+        </div>
+  
+        <div class="flex flex-col bg-white">
+          <div class="flex items-center justify-between">
+            <label class="text-black font-semibold">Đáp án:</label>
+          </div>
+          <div class="w-full bg-white text-black rounded focus:outline-none">
+            <textarea
+              class="w-full bg-white border border-slate-300 text-black p-2 rounded focus:outline-none overflow-hidden resize-none"
+              data-assignment_id="${assign.assignment_id}"
+              data-type="answer"
+            >${assign.answer || ""}</textarea>
+          </div>
+        </div>
+  
+        <div class="flex flex-col bg-white">
+          <div class="flex items-center justify-between">
+            <label class="text-black font-semibold">Hướng dẫn giải:</label>
+          </div>
+          <div class="w-full bg-white text-black rounded focus:outline-none">
+            <textarea
+              class="w-full bg-white border border-slate-300 text-black p-2 rounded focus:outline-none overflow-hidden resize-none"
+              data-assignment_id="${assign.assignment_id}"
+              data-type="solution"
+            >${assign.solution_guide || ""}</textarea>
+          </div>
+        </div>
+      </div>
+    `;
+
+      // --- Gắn vào DOM ---
+      editors.insertAdjacentHTML("beforeend", html);
+
+      // --- Lấy các textarea ---
+      const questionTA = editors.querySelector(`textarea[data-assignment_id="${assign.assignment_id}"][data-type="question"]`);
+      const answerTA = editors.querySelector(`textarea[data-assignment_id="${assign.assignment_id}"][data-type="answer"]`);
+      const solutionTA = editors.querySelector(`textarea[data-assignment_id="${assign.assignment_id}"][data-type="solution"]`);
+
+      // --- Auto resize ---
+      requestAnimationFrame(() => {
+        autoResize(questionTA);
+        autoResize(answerTA);
+        autoResize(solutionTA);
+      });
+
+    };
+
+
+    const renderAssignments = (assignments, preview) => {
+      preview.innerHTML = '';
+
+      assignments.forEach((assign, idx) => {
+        let html = `<div class="mb-6 pb-2">`;
+
+        // --- Câu hỏi ---
+        if (assign.question) {
+          let raw = `**Câu ${idx + 1}** **(${assign.score} điểm)** ${assign.question}`;
+          let imageMap = assign.images || {};
+
+          raw = raw.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+            key = key.trim();
+            if (imageMap[key]) {
+              return `<img src="${imageMap[key]}" 
+                         data-key="${key}" 
+                         data-assignment_id="${assign.assignment_id}" 
+                         alt="${key}" 
+                         class="max-w-xs rounded shadow cursor-pointer">`;
+            }
+            return match;
+          });
+
+          html += `
+          <div class="question-block"
+               data-assignment_id="${assign.assignment_id}"
+               data-type="question">
+            ${marked.parse(raw)}
+          </div>`;
+        }
+
+        // --- Hướng dẫn giải ---
+        if (assign.solution_guide) {
+          html += `
+          <div class="solution-guide-block p-2 border-l-4 border-green-400 bg-green-50 [&_p]:m-0"
+               data-assignment_id="${assign.assignment_id}"
+               data-type="solution">
+            ${marked.parse(assign.solution_guide)}
+          </div>`;
+        }
+
+        html += `</div>`;
+        preview.insertAdjacentHTML("beforeend", html);
+      });
+
+      // --- Format lại phần đáp án ---
+      preview.querySelectorAll("p").forEach(p => {
+        if (/([A-D]\.\s)/.test(p.innerHTML)) {
+          const match = p.innerHTML.match(/(.*?)([A-D]\..*)/s);
+          if (!match) return;
+
+          const questionPart = match[1];
+          const answerPart = match[2];
+          const parts = answerPart.split(/&emsp;|(?=[A-D]\.\s)/).filter(Boolean);
+
+          let innerHTML = `<span>${questionPart}</span>
+          <div class="flex w-full mt-2 gap-1">`;
+
+          parts.forEach(part => {
+            const trimmed = part.trim();
+            const ansKey = trimmed.substring(0, 1);
+            const content = trimmed.substring(2).trim();
+            const isCorrect = (assignments.find(a =>
+              a.assignment_id == p.closest('[data-assignment_id]')?.dataset.assignment_id
+            )?.answer || "").split(",").includes(ansKey);
+
+            innerHTML += `
+            <span class="flex items-center gap-2 px-3 py-2 flex-1">
+              ${isCorrect
+                ? `<span class="w-6 h-6 flex items-center justify-center border-2 border-gray-700 rounded-full font-semibold text-gray-700">${ansKey}</span>`
+                : `<span class="font-semibold text-gray-700">${ansKey}.</span>`
+              }
+              <span>${content}</span>
+            </span>`;
+          });
+
+          innerHTML += `</div>`;
+          p.innerHTML = innerHTML;
+        }
+      });
+
+      // --- Highlight + MathJax ---
+      preview.querySelectorAll("pre code").forEach(el => hljs.highlightElement(el));
+      if (window.MathJax) MathJax.typesetPromise([preview]);
+    };
+
+
+    // --- Nội dung từ: index.js (Part 1 - elements) ---
+    // (Bỏ qua import)
+    const elements = {
+      preview: document.getElementById('preview'),
+      editors: document.getElementById('editors'),
+      imageModal: document.getElementById('imageModal'),
+      cropImage: document.getElementById('cropImage'),
+      cancelCrop: document.getElementById('cancelCrop'),
+      saveCrop: document.getElementById('saveCrop'),
+      splitCore: document.getElementById('splitCore'),
+      downloadBtn: document.getElementById('downloadBtn'),
+    };
+
+
+    // --- Nội dung từ: handlers.js ---
+    // (Bỏ qua import)
+    // (Bỏ qua 'elements' duplicate)
+
+    const RenderEditors = (assignments) => {
+      elements.editors.innerHTML = "";
+      assignments.forEach((assign, idx) => {
+        createTextarea(elements.editors, assign, idx); // Bỏ prefix 'ui.'
+      });
+    };
+
+    // (Code handleSplitIntoPage đã bị comment)
+
+    const handleEditorChangeTextarea = (e) => {
+      if (e.target.tagName !== "TEXTAREA") return;
+      let assign = null;
+      if (e.target.dataset.type == "question") {
+        assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign.question = e.target.value;
+      } else if (e.target.dataset.type == "answer") {
+        assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign.answer = e.target.value;
+
+      } else if (e.target.dataset.type == "solution") {
+        assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign.solution_guide = e.target.value;
+      }
+      autoResize(e.target); // Bỏ prefix 'ui.'
+      addAssignment(assign) // Bỏ prefix 'state.'
+      renderAssignments(getAssignments(), elements.preview) // Bỏ prefix 'ui.' và 'state.'
+    };
+
+
+    const handleDownloadBtn = (e) => {
+      const elementToPrint = document.getElementById('preview');
+      if (!elementToPrint) return;
+      elementToPrint.classList.add('print-this');
+      window.print();
+      window.addEventListener('afterprint', () => {
+        elementToPrint.classList.remove('print-this');
+      }, { once: true });
+    }
+
+    // (Code handleDownloadBtn cũ đã bị comment)
+
+    const handleDeleteAssignment = (e) => {
+      if (e.target.tagName !== "BUTTON") return;
+      if (e.target.dataset.type == "delete") {
+        removeAssignmentById(e.target.dataset.assignment_id) // Bỏ prefix 'state.'
+        console.log(getAssignments()) // Bỏ prefix 'state.'
+        RenderEditors(getAssignments()) // Bỏ prefix 'state.'
+        renderAssignments(getAssignments(), elements.preview) // Bỏ prefix 'ui.' và 'state.'
+      }
+    };
+
+    const handleChangeScore = (e) => {
+      if (e.target.tagName !== "INPUT") return;
+      if (e.target.dataset.type == "score") {
+        let assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign.score = parseFloat(e.target.value);
+        addAssignment(assign) // Bỏ prefix 'state.'
+        renderAssignments(getAssignments(), elements.preview) // Bỏ prefix 'ui.' và 'state.'
+      }
+    };
+
+    const handleSplitScore = (e) => {
+      const assignments = getAssignments(); // Bỏ prefix 'state.'
+      assignments.forEach(assign => {
+        assign.score = parseFloat((10 / assignments.length).toFixed(2));
+      })
+      RenderEditors(assignments);
+      setAssignments(assignments); // Bỏ prefix 'state.'
+      renderAssignments(getAssignments(), elements.preview); // Bỏ prefix 'ui.' và 'state.'
+    }
+
+    // (Code waitForMathJax đã bị comment)
+
+    const handlePreviewFocusClick = (e) => {
+      const assignment_id = e.target.closest("[data-assignment_id]").dataset.assignment_id;
+      const type = e.target.closest("[data-type]").dataset.type;
+      const ta = elements.editors.querySelector(`textarea[data-assignment_id="${assignment_id}"][data-type="${type}"]`);
+      if (!ta) return;
+      ta.focus();
+      ta.setSelectionRange(0, 0); // con trỏ về đầu
+    };
+
+    // --- Crop modal ---
+    const handleImageClick = (e) => {
+      if (e.target.tagName === "IMG" && e.target.dataset.key) {
+        console.log(e.target.dataset.key);
+        console.log(e.target.dataset.assignment_id);
+
+        setCurrentKey(e.target.dataset.key); // Bỏ prefix 'state.'
+        setCurrentAssignment(getAssignmentById(e.target.dataset.assignment_id)); // Bỏ prefix 'state.'
+
+        elements.cropImage.src = getCurrentAssignment().images[getCurrentKey()]; // Bỏ prefix 'state.'
+        elements.imageModal.classList.remove("hidden");
+        elements.imageModal.classList.add("flex");
+        if (getCropper()) getCropper().destroy(); // Bỏ prefix 'state.'
+        setCropper(new Cropper(elements.cropImage, { aspectRatio: NaN, viewMode: 1 })); // Bỏ prefix 'state.'
+      }
+    };
+
+    // --- Cancel crop ---
+    const handleCancelCrop = () => {
+      document.getElementById("imageModal").classList.add("hidden");
+      if (getCropper()) getCropper().destroy(); // Bỏ prefix 'state.'
+      setCropper(null); // Bỏ prefix 'state.'
+    };
+
+    // --- Save crop ---
+    const handleSaveCrop = () => {
+      if (!getCropper() || !getCurrentKey() || !getCurrentAssignment()) return; // Bỏ prefix 'state.'
+      const canvas = getCropper().getCroppedCanvas({ maxWidth: 800, maxHeight: 800 }); // Bỏ prefix 'state.'
+      const newBase64 = canvas.toDataURL("image/png");
+      getCurrentAssignment().images[getCurrentKey()] = newBase64; // Bỏ prefix 'state.'
+      document.getElementById("imageModal").classList.add("hidden");
+      getCropper().destroy(); // Bỏ prefix 'state.'
+      setCropper(null); // Bỏ prefix 'state.'
+      addAssignment(getCurrentAssignment()); // Bỏ prefix 'state.'
+      renderAssignments(getAssignments(), elements.preview); // Bỏ prefix 'ui.' và 'state.'
+    };
+
+
+    // --- Nội dung từ: index.js (Part 2 - init) ---
+    // (Bỏ qua import)
+
+    const initAssignmentManagement = async () => {
+      console.log("initAssignmentManagement");
+
+      marked.setOptions({
+        highlight: function (code, lang) {
+          if (hljs.getLanguage(lang)) return hljs.highlight(code, { language: lang }).value;
+          return hljs.highlightAuto(code).value;
+        },
+        langPrefix: 'language-', breaks: true, gfm: true
+      });
+
+      const assignments = await fetchAssignments(getUserId()); // Bỏ prefix 'api.' và 'state.'
+      RenderEditors(assignments); // Bỏ prefix 'handlers.'
+      renderAssignments(assignments, elements.preview); // Bỏ prefix 'ui.'
+      // handlers.handleSplitIntoPage();
+      setAssignments(assignments); // Bỏ prefix 'state.'
+      setupEventListeners();
+    };
+
+    const setupEventListeners = () => {
+      elements.cancelCrop.addEventListener('click', handleCancelCrop); // Bỏ prefix 'handlers.'
+      elements.saveCrop.addEventListener('click', handleSaveCrop); // Bỏ prefix 'handlers.'
+      elements.editors.addEventListener('input', handleEditorChangeTextarea); // Bỏ prefix 'handlers.'
+      elements.editors.addEventListener('click', handleDeleteAssignment); // Bỏ prefix 'handlers.'
+      elements.editors.addEventListener('input', handleChangeScore); // Bỏ prefix 'handlers.'
+      // elements.editors.addEventListener('click', handleChangeType);
+      elements.splitCore.addEventListener('click', handleSplitScore); // Bỏ prefix 'handlers.'
+      elements.preview.addEventListener('click', handleImageClick); // Bỏ prefix 'handlers.'
+      elements.preview.addEventListener('click', handlePreviewFocusClick); // Bỏ prefix 'handlers.'
+      elements.downloadBtn.addEventListener('click', handleDownloadBtn); // Bỏ prefix 'handlers.'
+    };
+
+    // Initialize the app when the DOM is fully loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAssignmentManagement);
+    } else {
+      initAssignmentManagement();
+    }
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#1e5eff',
+            'text-primary': '#121212',
+            'text-secondary': '#5a607f',
+            'text-muted': '#a1a7c4',
+            'border-light': '#e6e9f4',
+            'border-medium': '#d9e1ec',
+            'border-checkbox': '#d7dbec',
+            'bg-light': '#f5f6fa',
+            'status-active': '#06a561',
+            'status-active-bg': '#defef0',
+            'status-inactive': '#ff5c5c',
+            'status-inactive-bg': '#ffdfdf'
+          },
+          fontFamily: {
+            'roboto': ['Roboto', 'sans-serif'],
+            'inter': ['Inter', 'sans-serif'],
+            'gilroy': ['Gilroy', 'sans-serif'],
+            'manrope': ['Manrope', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        background-color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* === THAY ĐỔI QUAN TRỌNG === */
+      /* Chuyển container từ grid sang block để phá vỡ bố cục cột khi in */
+      .print-container {
+        display: block !important;
+      }
+
+      /* Ẩn tất cả các phần tử con trực tiếp */
+      .print-container>* {
+        display: none;
+      }
+
+      /* CHỈ HIỂN THỊ phần tử được đánh dấu để in, cho phép nó chiếm toàn bộ không gian */
+      .print-container>.print-this {
+        display: block !important;
+        width: 100%;
+        height: auto;
+        overflow: visible !important;
+      }
+    }
+  </style>
+
+</head>
+
+<body class="bg-bg-light min-h-screen">
+  <header class="no-print bg-white shadow-sm border-b border-border-light h-16 flex items-center justify-between px-6">
+    <div class="flex items-center">
+      <div class="flex items-center">
+        <img src="/static/images/71f227c390f489287c3a010d68ffeef1c50b867d.svg" alt="Logo" class="w-10 h-10 mr-3">
+        <span class="text-xl font-bold font-gilroy text-text-primary">AronEdu</span>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <div class="relative">
+        <img src="/static/images/chat.svg" alt="Chat" class="w-6 h-6">
+      </div>
+
+      <div class="relative">
+        <img src="/static/images/Bell.svg" alt="Notifications" class="w-6 h-6">
+        <span
+          class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">5</span>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <img src="/static/images/95bca3ecaf6d28d115834f85b6163b6e58e91c7c.png" alt="User Avatar"
+            class="w-9 h-9 rounded-full">
+        </div>
+        <span class="text-text-secondary text-sm font-inter">Thanh Luan</span>
+        <img src="/static/images/arrow.svg" alt="Dropdown" class="w-6 h-6">
+      </div>
+    </div>
+  </header>
+
+  <div class="no-print flex items-center justify-between gap-4 py-4 px-6 rounded-lg bg-gray-100">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="font-medium text-xl leading-7 text-gray-900 whitespace-nowrap">Trang chủ</span>
+      <span class="mx-1 text-gray-400">&gt;</span>
+      <span class="font-medium text-xl leading-7 text-gray-900 whitespace-nowrap">Đề thi</span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="flex items-center h-10 bg-white border border-gray-300 rounded-lg px-3 gap-2 min-w-[16rem]">
+        <img src="/static/images/Tim_Kiem.png" alt="search" class="w-5 h-5 opacity-70" />
+        <input type="text" placeholder="Nhập số câu muốn tìm kiếm"
+          class="flex-1 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-500" />
+      </div>
+
+      <button id="splitCore"
+        class="flex items-center gap-1 bg-blue-600 text-white rounded-lg px-3 py-2 text-sm font-medium hover:bg-blue-700">
+        <img src="/static/images/Dau_Cong.png" alt="add" class="w-5 h-5" />
+        Chia điểm
+      </button>
+
+      <button
+        class="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-blue-600 text-sm font-medium hover:bg-gray-50">
+        <img src="/static/images/Upload.svg" alt="upload" class="w-5 h-5" />
+        Upload
+      </button>
+
+      <button id="downloadBtn"
+        class="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-blue-600 text-sm font-medium hover:bg-gray-50">
+        <img src="/static/images/Download.svg" alt="download" class="w-5 h-5" />
+        Tải xuống
+      </button>
+
+      <button
+        class="flex items-center justify-center bg-white border border-gray-300 rounded-lg w-10 h-10 hover:bg-gray-50">
+        <img src="/static/images/Information.svg" alt="icon" class="w-5 h-5" />
+      </button>
+    </div>
+  </div>
+
+  <div class="print-container grid grid-cols-2 gap-6 h-screen px-6 bg-gray-100">
+    <div id="preview" class="max-w-none overflow-y-auto bg-white"></div>
+    <div id="editors" class="no-print flex flex-col overflow-y-auto max-h-full"></div>
+  </div>
+
+  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-4 w-3/4 max-w-2xl">
+      <h2 class="text-lg font-bold mb-2">✂️ Chỉnh sửa ảnh</h2>
+      <div class="flex justify-center">
+        <img id="cropImage" class="max-h-[400px]" />
+      </div>
+      <div class="mt-4 flex justify-end gap-3">
+        <button id="cancelCrop" class="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500">Hủy</button>
+        <button id="saveCrop" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Cắt & Lưu</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
