@@ -30,8 +30,9 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+  <script src="./mock_data_central.js"></script>
 
-  <script type="module">
+  <script>
     // --- Nội dung từ: state.js ---
     let currentKey = '';
     let currentAssignment = null;
@@ -95,111 +96,7 @@
     };
 
 
-    // --- Nội dung từ: api.js ---
-    const fetchAssignments = async (userId) => {
-      let assignments = [
-        {
-          assignment_id: 1,
-          question: "Cho hàm số $y = f(x)$ có bảng biến thiên: \n{{img1}}\n\nA. 3\tB. 2\tC. 0\tD. 1",
-          solution_guide: "dựa vào bảng biến thiên xác định số giao điểm $y = f(x)$",
-          answer: "A,B",
-          score: 1,
-          images: { img1: "data:image/jpeg;base64,/9j/4AKKKKAP//Z" }
-        },
-        {
-          assignment_id: 2,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 3,
-          question: "Ví dụ Markdown + code:\n```python\nprint('Hello')\n```",
-          solution_guide: "ví dụ Markdown + code",
-          answer: "C",
-          score: 1,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        },
-        {
-          assignment_id: 4,
-          question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-          solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-          answer: "B",
-          score: 2,
-          images: {}
-        }
-      ];
-
-      return assignments
-
-
-    };
+    // --- HÀM fetchAssignments() NỘI TUYẾN ĐÃ BỊ XÓA ---
 
 
     // --- Nội dung từ: ui.js ---
@@ -390,50 +287,39 @@
     };
 
 
-    // --- Nội dung từ: index.js (Part 1 - elements) ---
-    // (Bỏ qua import)
-    const elements = {
-      preview: document.getElementById('preview'),
-      editors: document.getElementById('editors'),
-      imageModal: document.getElementById('imageModal'),
-      cropImage: document.getElementById('cropImage'),
-      cancelCrop: document.getElementById('cancelCrop'),
-      saveCrop: document.getElementById('saveCrop'),
-      splitCore: document.getElementById('splitCore'),
-      downloadBtn: document.getElementById('downloadBtn'),
-    };
+    // ===== BẮT ĐẦU SỬA LỖI =====
+    // 1. KHAI BÁO 'elements' LÀ BIẾN TRỐNG Ở PHẠM VI TOÀN CỤC (CỦA SCRIPT)
+    let elements = {};
+    // const elements = { ... } // <-- ĐÃ XÓA KHỎI ĐÂY
+    // ===== KẾT THÚC SỬA LỖI =====
 
 
     // --- Nội dung từ: handlers.js ---
-    // (Bỏ qua import)
-    // (Bỏ qua 'elements' duplicate)
-
     const RenderEditors = (assignments) => {
+      // Dòng này sẽ gây lỗi nếu 'elements.editors' là null
       elements.editors.innerHTML = "";
       assignments.forEach((assign, idx) => {
-        createTextarea(elements.editors, assign, idx); // Bỏ prefix 'ui.'
+        createTextarea(elements.editors, assign, idx); 
       });
     };
-
-    // (Code handleSplitIntoPage đã bị comment)
 
     const handleEditorChangeTextarea = (e) => {
       if (e.target.tagName !== "TEXTAREA") return;
       let assign = null;
       if (e.target.dataset.type == "question") {
-        assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign = getAssignmentById(e.target.dataset.assignment_id); 
         assign.question = e.target.value;
       } else if (e.target.dataset.type == "answer") {
-        assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign = getAssignmentById(e.target.dataset.assignment_id); 
         assign.answer = e.target.value;
 
       } else if (e.target.dataset.type == "solution") {
-        assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        assign = getAssignmentById(e.target.dataset.assignment_id); 
         assign.solution_guide = e.target.value;
       }
-      autoResize(e.target); // Bỏ prefix 'ui.'
-      addAssignment(assign) // Bỏ prefix 'state.'
-      renderAssignments(getAssignments(), elements.preview) // Bỏ prefix 'ui.' và 'state.'
+      autoResize(e.target); 
+      addAssignment(assign) 
+      renderAssignments(getAssignments(), elements.preview) 
     };
 
 
@@ -447,39 +333,35 @@
       }, { once: true });
     }
 
-    // (Code handleDownloadBtn cũ đã bị comment)
-
     const handleDeleteAssignment = (e) => {
       if (e.target.tagName !== "BUTTON") return;
       if (e.target.dataset.type == "delete") {
-        removeAssignmentById(e.target.dataset.assignment_id) // Bỏ prefix 'state.'
-        console.log(getAssignments()) // Bỏ prefix 'state.'
-        RenderEditors(getAssignments()) // Bỏ prefix 'state.'
-        renderAssignments(getAssignments(), elements.preview) // Bỏ prefix 'ui.' và 'state.'
+        removeAssignmentById(e.target.dataset.assignment_id) 
+        console.log(getAssignments()) 
+        RenderEditors(getAssignments()) 
+        renderAssignments(getAssignments(), elements.preview) 
       }
     };
 
     const handleChangeScore = (e) => {
       if (e.target.tagName !== "INPUT") return;
       if (e.target.dataset.type == "score") {
-        let assign = getAssignmentById(e.target.dataset.assignment_id); // Bỏ prefix 'state.'
+        let assign = getAssignmentById(e.target.dataset.assignment_id); 
         assign.score = parseFloat(e.target.value);
-        addAssignment(assign) // Bỏ prefix 'state.'
-        renderAssignments(getAssignments(), elements.preview) // Bỏ prefix 'ui.' và 'state.'
+        addAssignment(assign) 
+        renderAssignments(getAssignments(), elements.preview) 
       }
     };
 
     const handleSplitScore = (e) => {
-      const assignments = getAssignments(); // Bỏ prefix 'state.'
+      const assignments = getAssignments(); 
       assignments.forEach(assign => {
         assign.score = parseFloat((10 / assignments.length).toFixed(2));
       })
       RenderEditors(assignments);
-      setAssignments(assignments); // Bỏ prefix 'state.'
-      renderAssignments(getAssignments(), elements.preview); // Bỏ prefix 'ui.' và 'state.'
+      setAssignments(assignments); 
+      renderAssignments(getAssignments(), elements.preview); 
     }
-
-    // (Code waitForMathJax đã bị comment)
 
     const handlePreviewFocusClick = (e) => {
       const assignment_id = e.target.closest("[data-assignment_id]").dataset.assignment_id;
@@ -496,43 +378,56 @@
         console.log(e.target.dataset.key);
         console.log(e.target.dataset.assignment_id);
 
-        setCurrentKey(e.target.dataset.key); // Bỏ prefix 'state.'
-        setCurrentAssignment(getAssignmentById(e.target.dataset.assignment_id)); // Bỏ prefix 'state.'
+        setCurrentKey(e.target.dataset.key); 
+        setCurrentAssignment(getAssignmentById(e.target.dataset.assignment_id)); 
 
-        elements.cropImage.src = getCurrentAssignment().images[getCurrentKey()]; // Bỏ prefix 'state.'
+        elements.cropImage.src = getCurrentAssignment().images[getCurrentKey()]; 
         elements.imageModal.classList.remove("hidden");
         elements.imageModal.classList.add("flex");
-        if (getCropper()) getCropper().destroy(); // Bỏ prefix 'state.'
-        setCropper(new Cropper(elements.cropImage, { aspectRatio: NaN, viewMode: 1 })); // Bỏ prefix 'state.'
+        if (getCropper()) getCropper().destroy(); 
+        setCropper(new Cropper(elements.cropImage, { aspectRatio: NaN, viewMode: 1 })); 
       }
     };
 
     // --- Cancel crop ---
     const handleCancelCrop = () => {
       document.getElementById("imageModal").classList.add("hidden");
-      if (getCropper()) getCropper().destroy(); // Bỏ prefix 'state.'
-      setCropper(null); // Bỏ prefix 'state.'
+      if (getCropper()) getCropper().destroy(); 
+      setCropper(null); 
     };
 
     // --- Save crop ---
     const handleSaveCrop = () => {
-      if (!getCropper() || !getCurrentKey() || !getCurrentAssignment()) return; // Bỏ prefix 'state.'
-      const canvas = getCropper().getCroppedCanvas({ maxWidth: 800, maxHeight: 800 }); // Bỏ prefix 'state.'
+      if (!getCropper() || !getCurrentKey() || !getCurrentAssignment()) return; 
+      const canvas = getCropper().getCroppedCanvas({ maxWidth: 800, maxHeight: 800 }); 
       const newBase64 = canvas.toDataURL("image/png");
-      getCurrentAssignment().images[getCurrentKey()] = newBase64; // Bỏ prefix 'state.'
+      getCurrentAssignment().images[getCurrentKey()] = newBase64; 
       document.getElementById("imageModal").classList.add("hidden");
-      getCropper().destroy(); // Bỏ prefix 'state.'
-      setCropper(null); // Bỏ prefix 'state.'
-      addAssignment(getCurrentAssignment()); // Bỏ prefix 'state.'
-      renderAssignments(getAssignments(), elements.preview); // Bỏ prefix 'ui.' và 'state.'
+      getCropper().destroy(); 
+      setCropper(null); 
+      addAssignment(getCurrentAssignment()); 
+      renderAssignments(getAssignments(), elements.preview); 
     };
 
 
     // --- Nội dung từ: index.js (Part 2 - init) ---
-    // (Bỏ qua import)
-
     const initAssignmentManagement = async () => {
       console.log("initAssignmentManagement");
+
+      // ===== BẮT ĐẦU SỬA LỖI =====
+      // 2. DI CHUYỂN VIỆC KHỞI TẠO 'elements' VÀO BÊN TRONG HÀM NÀY
+      // Bây giờ, nó chỉ chạy sau khi DOM đã được tải
+      elements = {
+        preview: document.getElementById('preview'),
+        editors: document.getElementById('editors'), // <-- Sẽ không còn là 'null'
+        imageModal: document.getElementById('imageModal'),
+        cropImage: document.getElementById('cropImage'),
+        cancelCrop: document.getElementById('cancelCrop'),
+        saveCrop: document.getElementById('saveCrop'),
+        splitCore: document.getElementById('splitCore'),
+        downloadBtn: document.getElementById('downloadBtn'),
+      };
+      // ===== KẾT THÚC SỬA LỖI =====
 
       marked.setOptions({
         highlight: function (code, lang) {
@@ -542,25 +437,26 @@
         langPrefix: 'language-', breaks: true, gfm: true
       });
 
-      const assignments = await fetchAssignments(getUserId()); // Bỏ prefix 'api.' và 'state.'
-      RenderEditors(assignments); // Bỏ prefix 'handlers.'
-      renderAssignments(assignments, elements.preview); // Bỏ prefix 'ui.'
-      // handlers.handleSplitIntoPage();
-      setAssignments(assignments); // Bỏ prefix 'state.'
+      // Sử dụng hàm từ biến toàn cục
+      const assignments = await window.APP_MOCK_DATA.fetchAssignments(getUserId());
+      
+      // Bây giờ hàm này sẽ chạy đúng
+      RenderEditors(assignments); 
+      renderAssignments(assignments, elements.preview); 
+      setAssignments(assignments); 
       setupEventListeners();
     };
 
     const setupEventListeners = () => {
-      elements.cancelCrop.addEventListener('click', handleCancelCrop); // Bỏ prefix 'handlers.'
-      elements.saveCrop.addEventListener('click', handleSaveCrop); // Bỏ prefix 'handlers.'
-      elements.editors.addEventListener('input', handleEditorChangeTextarea); // Bỏ prefix 'handlers.'
-      elements.editors.addEventListener('click', handleDeleteAssignment); // Bỏ prefix 'handlers.'
-      elements.editors.addEventListener('input', handleChangeScore); // Bỏ prefix 'handlers.'
-      // elements.editors.addEventListener('click', handleChangeType);
-      elements.splitCore.addEventListener('click', handleSplitScore); // Bỏ prefix 'handlers.'
-      elements.preview.addEventListener('click', handleImageClick); // Bỏ prefix 'handlers.'
-      elements.preview.addEventListener('click', handlePreviewFocusClick); // Bỏ prefix 'handlers.'
-      elements.downloadBtn.addEventListener('click', handleDownloadBtn); // Bỏ prefix 'handlers.'
+      elements.cancelCrop.addEventListener('click', handleCancelCrop); 
+      elements.saveCrop.addEventListener('click', handleSaveCrop); 
+      elements.editors.addEventListener('input', handleEditorChangeTextarea); 
+      elements.editors.addEventListener('click', handleDeleteAssignment); 
+      elements.editors.addEventListener('input', handleChangeScore); 
+      elements.splitCore.addEventListener('click', handleSplitScore); 
+      elements.preview.addEventListener('click', handleImageClick); 
+      elements.preview.addEventListener('click', handlePreviewFocusClick); 
+      elements.downloadBtn.addEventListener('click', handleDownloadBtn); 
     };
 
     // Initialize the app when the DOM is fully loaded
@@ -570,6 +466,7 @@
       initAssignmentManagement();
     }
   </script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -611,18 +508,14 @@
         margin: 0 !important;
       }
 
-      /* === THAY ĐỔI QUAN TRỌNG === */
-      /* Chuyển container từ grid sang block để phá vỡ bố cục cột khi in */
       .print-container {
         display: block !important;
       }
 
-      /* Ẩn tất cả các phần tử con trực tiếp */
       .print-container>* {
         display: none;
       }
 
-      /* CHỈ HIỂN THỊ phần tử được đánh dấu để in, cho phép nó chiếm toàn bộ không gian */
       .print-container>.print-this {
         display: block !important;
         width: 100%;
@@ -723,5 +616,4 @@
   </div>
 
 </body>
-
 </html>

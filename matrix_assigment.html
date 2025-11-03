@@ -30,7 +30,9 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
-</head>
+
+    <script src="./mock_data_central.js"></script>
+    </head>
 
 <body class="bg-gray-50">
 
@@ -104,7 +106,7 @@
                                 </tr>
                             </thead>
                             <tbody id="table-body">
-                            </tbody>
+                                </tbody>
                             <tfoot class="bg-gray-50 border-t-2 border-gray-300">
                                 <tr class="font-bold text-gray-900">
                                     <td class="px-4 py-3 text-right" colspan="2">
@@ -148,44 +150,12 @@
     <script>
         // --- NGUỒN DỮ LIỆU ---
 
-        // Dữ liệu cho BÊN TRÁI (Nguồn, cấu trúc lồng nhau)
-        const knowledgeSourceData = [
-            {
-                "chapter_id": 1,
-                "chapter": "DỰ ÁN: ALPHA",
-                "chapter_name": "TRIỂN KHAI HỆ THỐNG QUẢN LÝ KHÁCH HÀNG (CRM)",
-                "lessons": [
-                    {
-                        "lesson_id": 1,
-                        "lesson_name": "Giai đoạn 1: Khởi tạo & Phân tích",
-                        "knowledge_units": [ 
-                            {
-                                "knowledge_id": 1, 
-                                "description": "Tổ chức họp khởi động (kick-off) với các bên liên quan."
-                            },
-                            {
-                                "knowledge_id": 2, 
-                                "description": "Thu thập và tài liệu hóa các yêu cầu nghiệp vụ (Business Requirements)."
-                            }
-                        ]
-                    },
-                    {
-                        "lesson_id": 2,
-                        "lesson_name": "Giai đoạn 2: Thiết kế & Phát triển",
-                        "knowledge_units": [ 
-                            {
-                                "knowledge_id": 4, 
-                                "description": "Thiết kế kiến trúc hệ thống và mô hình cơ sở dữ liệu."
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
+        // 2. XÓA BỎ DỮ LIỆU CŨ TỪ
+        // [Nguồn: thanhluancn1/hello_app/hello_app-fc1c05dbd6e940d558c498b242e83f39c6891085/matrix_assigment.html]
+        // const knowledgeSourceData = [ ... ]; // <-- ĐÃ XÓA
 
-        // Dữ liệu cho BÊN PHẢI (Đích, cấu trúc phẳng, bắt đầu rỗng)
-        // *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
-        let knowledge_components = []; // <-- ĐÃ ĐỔI TÊN TỪ examTableData
+        // Dữ liệu cho BÊN PHẢI (vẫn giữ nguyên)
+        let knowledge_components = [];
 
         // --- CÁC HÀM CHO BÊN TRÁI (KNOWLEDGE CONTENT) ---
 
@@ -193,12 +163,31 @@
          * Render toàn bộ nội dung cây kiến thức bên trái
          */
         function renderKnowledgeContent() {
+            
+            // 3. GỌI HÀM MỚI VỚI FILTER MẶC ĐỊNH
+            // Các giá trị này được lấy từ 'knowledge_data.json'
+            const defaultGrade = "Khối 10";
+            const defaultSubject = "Toán học";
+            const defaultBook = "Toán 10 - Kết nối tri thức";
+
+            // Gọi hàm từ biến toàn cục đã được tải trong <head>
+            const knowledgeSourceData = window.APP_MOCK_DATA.getKnowledgeData(
+                defaultGrade,
+                defaultSubject,
+                defaultBook
+            );
+            
+            // --- (Phần còn lại của hàm giữ nguyên) ---
+
             const container = document.getElementById('content-placeholder');
             if (!container) return;
 
             let allHtmlContent = '';
 
             knowledgeSourceData.forEach(chapter => {
+                // Đổi 'chapter.chapter' thành 'chapter.chapter_number'
+                // và 'chapter.chapter_name' thành 'chapter.chapter_name'
+                // để khớp với cấu trúc dữ liệu mới
                 const chapterTextId = `text-chapter-${chapter.chapter_id}`;
                 const chapterContentId = `content-chapter-${chapter.chapter_id}`;
 
@@ -265,7 +254,7 @@
                 allHtmlContent += `
                 <div class="bg-white rounded-xl border border-gray-200">
                     <div class="chapter p-4 cursor-pointer" data-toggle-target="#${chapterContentId}">
-                        <h2 class="text-base font-bold text-black mb-2">${chapter.chapter}</h2>
+                        <h2 class="text-base font-bold text-black mb-2">Chương ${chapter.chapter_number}</h2>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2 flex-1">
                                 <input type="checkbox" 
@@ -357,7 +346,6 @@
         /**
          * HÀM "CẦU NỐI"
          * Xử lý khi checkbox bên trái thay đổi
-         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
          */
         function handleKnowledgeCheckboxChange(event) {
             const checkbox = event.target;
@@ -389,9 +377,9 @@
                     "multiple_choice": 0, "essay": 0, "true_false": 0, "fill_in_blank": 0,
                     "total_points": 0
                 };
-                knowledge_components.push(newItem); // <-- ĐÃ ĐỔI TÊN
+                knowledge_components.push(newItem); 
             } else {
-                knowledge_components = knowledge_components.filter(item => { // <-- ĐÃ ĐỔI TÊN
+                knowledge_components = knowledge_components.filter(item => { 
                     const matchChapter = item.chapter_id == chapterId;
                     const matchLesson = (item.lesson_id || null) == lessonId;
                     const matchKnowledge = (item.knowledge_id || null) == knowledgeId;
@@ -410,7 +398,7 @@
         }
 
         /**
-         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+         * Render phần thân của bảng
          */
         function renderTableBody() {
             const tableBody = document.getElementById('table-body');
@@ -419,7 +407,7 @@
             let tableRowsHtml = '';
             let stt = 1;
 
-            knowledge_components.forEach((item, index) => { // <-- ĐÃ ĐỔI TÊN
+            knowledge_components.forEach((item, index) => { 
                 const pathString = `${index}`; 
                 tableRowsHtml += createTableRow(item, stt++, pathString);
             });
@@ -472,7 +460,7 @@
         }
 
         /**
-         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
+         * Tính toán và render tổng
          */
         function calculateAndRenderTotals() {
             const totals = {
@@ -481,7 +469,7 @@
                 total_points: 0
             };
 
-            knowledge_components.forEach(item => { // <-- ĐÃ ĐỔI TÊN
+            knowledge_components.forEach(item => { 
                 updateTotals(item, totals);
             });
 
@@ -497,7 +485,6 @@
 
         /**
          * Xử lý thay đổi input TRÊN BẢNG BÊN PHẢI
-         * *** ĐÃ CẬP NHẬT THEO YÊU CẦU ***
          */
         function handleTableInputChange(event) {
             const input = event.target;
@@ -510,7 +497,7 @@
                 input.value = 0; 
             }
 
-            const targetObject = knowledge_components[pathIndex]; // <-- ĐÃ ĐỔI TÊN
+            const targetObject = knowledge_components[pathIndex]; 
 
             if (targetObject) {
                 targetObject[property] = newValue;
@@ -530,6 +517,13 @@
 
         // --- KHỞI CHẠY ---
         document.addEventListener('DOMContentLoaded', function () {
+            // Sửa lỗi: Đảm bảo các hàm này chỉ chạy 
+            // sau khi `elements` được định nghĩa
+            const elements = {
+                tableBody: document.getElementById('table-body')
+                // Thêm các elements khác nếu cần
+            };
+
             renderKnowledgeContent(); 
             renderExamTable();        
         });

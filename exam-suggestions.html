@@ -29,12 +29,11 @@
       }
     }
   </script>
-</head>
+
+  <script src="./mock_data_central.js"></script>
+  </head>
 
 <body class="bg-bg-light min-h-screen">
-
-  <script src="mock_data.js"></script>
-
 
   <div class="flex flex-col gap-6 items-start relative w-full p-6">
     
@@ -67,15 +66,18 @@
     </div>
 
     <div id="suggestion-container" class="flex flex-col gap-4 items-start relative w-full">
-      
       </div>
   </div>
 
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Lấy và parse dữ liệu JSON từ thẻ script
-      const jsonData = exam_suggestion;
+      // ===== BẮT ĐẦU THAY ĐỔI =====
+      // 3. SỬA ĐỂ GỌI HÀM TỪ BIẾN TOÀN CỤC
+      // const jsonData = exam_suggestion; // <-- Dòng cũ
+      const jsonData = window.APP_MOCK_DATA.getExamSuggestions(); // <-- Dòng mới
+      // ===== KẾT THÚC THAY ĐỔI =====
+
       // Lấy container để chèn nội dung
       const container = document.getElementById('suggestion-container');
       container.innerHTML = ''; // Xóa bất kỳ nội dung cũ nào
