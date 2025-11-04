@@ -31,6 +31,8 @@
   </script>
 
   <script src="./mock_data_central.js"></script>
+  <script src="./state.js"></script> 
+
   </head>
 
 <body class="bg-bg-light min-h-screen">
@@ -72,11 +74,15 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // ===== BẮT ĐẦU THAY ĐỔI =====
-      // 3. SỬA ĐỂ GỌI HÀM TỪ BIẾN TOÀN CỤC
-      // const jsonData = exam_suggestion; // <-- Dòng cũ
-      const jsonData = window.APP_MOCK_DATA.getExamSuggestions(); // <-- Dòng mới
-      // ===== KẾT THÚC THAY ĐỔI =====
+      
+      // Lấy dữ liệu từ mock data
+      const jsonData = window.APP_MOCK_DATA.getExamSuggestions();
+      
+      // SET DỮ LIỆU VÀO STATE TOÀN CỤC
+      if (window.APP_STATE && typeof window.APP_STATE.setExamSuggestions === 'function') {
+        window.APP_STATE.setExamSuggestions(jsonData);
+        console.log("Đã cập nhật _examSuggestions trong APP_STATE:", window.APP_STATE.getExamSuggestions());
+      }
 
       // Lấy container để chèn nội dung
       const container = document.getElementById('suggestion-container');
@@ -84,13 +90,23 @@
 
       // --- Hàm trợ giúp để tạo HTML cho một thẻ học sinh ---
       function createStudentCardHtml(studentTitle, batch) {
+        
+        // ===== BẮT ĐẦU THAY ĐỔI (BƯỚC 1) =====
+        // Thêm các thuộc tính động cho thẻ card
+        const hasBatch = Boolean(batch);
+        const batchIdAttr = hasBatch ? `data-batch-id="${batch.batch_id}"` : '';
+        const cardClasses = hasBatch 
+          ? 'bg-white border border-border-medium rounded-xl p-4 cursor-pointer transition-all hover:bg-gray-50 hover:shadow-md'
+          : 'bg-white border border-border-medium rounded-xl p-4 opacity-60'; // Thẻ không có batch sẽ bị mờ đi
+        // ===== KẾT THÚC THAY ĐỔI (BƯỚC 1) =====
+
         // Lấy dữ liệu từ batch nếu tồn tại, nếu không thì mặc định là 0
         const recognition = batch ? batch.recognition : 0;
         const understanding = batch ? batch.understanding : 0;
         const application = batch ? batch.application : 0;
-        // Tạo phụ đề, nếu không có batch thì để trống
+        
         return `
-        <div class="bg-white border border-border-medium rounded-xl p-4">
+        <div class="${cardClasses}" ${batchIdAttr}>
           <div class="flex flex-col gap-3 items-start">
             <div class="flex flex-col gap-1">
               <h3 class="font-inter font-medium text-base text-text-primary">
@@ -123,7 +139,6 @@
 
       // --- Hàm chính để render toàn bộ nội dung ---
       function renderSuggestions() {
-        // Danh sách 4 loại học sinh mà HTML gốc hiển thị
         const studentTypes = [
           'Học sinh cả lớp', 
           'Học sinh giỏi',
@@ -131,7 +146,6 @@
           'Học sinh trung bình'
         ];
 
-        // Lặp qua mỗi "lesson" trong mảng dữ liệu JSON
         jsonData.forEach(lesson => {
           let lessonHtml = `
           <div class="bg-white border border-border-medium rounded-xl p-6 w-full">
@@ -143,28 +157,51 @@
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           `;
 
-          // Lặp qua 4 loại học sinh
           studentTypes.forEach(studentType => {
-            // Tìm batch tương ứng trong 'assignment_batches' của lesson
             const matchingBatch = lesson.assignment_batches.find(batch => 
               batch.target_student.toLowerCase() === studentType.toLowerCase()
             );
-            
-            // Tạo HTML cho thẻ học sinh (dù có tìm thấy batch hay không)
             lessonHtml += createStudentCardHtml(studentType, matchingBatch);
           });
 
-          // Đóng các thẻ div
           lessonHtml += `
               </div>
             </div>
           </div>
           `;
-          
-          // Chèn HTML của cả khối lesson vào container
           container.innerHTML += lessonHtml;
         });
       }
+
+      // ===== BẮT ĐẦU THAY ĐỔI (BƯỚC 2 & 3) =====
+      // --- Hàm xử lý sự kiện click trên card ---
+      function handleCardClick(event) {
+        // Tìm thẻ card cha gần nhất có 'data-batch-id'
+        const card = event.target.closest('[data-batch-id]');
+        
+        if (!card) {
+          // Click vào vùng không hợp lệ (hoặc thẻ bị mờ)
+          return;
+        }
+
+        const batchId = card.dataset.batchId;
+        if (batchId) {
+          console.log(`Đã click vào batch ID: ${batchId}`);
+          
+          // 1. Gọi State để set mảng assignments
+          if (window.APP_STATE && typeof window.APP_STATE.setAssignmentsFromBatchId === 'function') {
+            window.APP_STATE.setAssignmentsFromBatchId(batchId);
+          }
+          
+          console.log(window.APP_STATE.getAssignments());
+          // 2. Chuyển hướng sang trang chi tiết
+          window.location.href = './assigment_detail.html';
+        }
+      }
+      
+      // Gắn trình nghe sự kiện (event delegation)
+      container.addEventListener('click', handleCardClick);
+      // ===== KẾT THÚC THAY ĐỔI (BƯỚC 2 & 3) =====
 
       // Chạy hàm render
       renderSuggestions();

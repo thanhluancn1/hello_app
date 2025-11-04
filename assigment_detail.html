@@ -31,74 +31,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
   <script src="./mock_data_central.js"></script>
+  
+  <script src="./state.js"></script>
+
 
   <script>
-    // --- Nội dung từ: state.js ---
-    let currentKey = '';
-    let currentAssignment = null;
-    let cropper = null;
-
-    let assignments = [];
-
-    let userId = '';
-
-
-    const getCurrentKey = () => currentKey;
-    const getCurrentAssignment = () => currentAssignment;
-    const getCropper = () => cropper;
-
-    const setCurrentKey = (newCurrentKey) => {
-      currentKey = newCurrentKey;
-    };
-
-    const setCurrentAssignment = (newCurrentAssignment) => {
-      currentAssignment = newCurrentAssignment;
-    };
-
-    const setCropper = (newCropper) => {
-      cropper = newCropper;
-    };
-
-    const removeAssignmentById = (assignmentId) => {
-      assignments = assignments.filter(a => a.assignment_id !== parseInt(assignmentId));
-      setAssignments(assignments);
-      return getAssignments();
-    };
-
-
-    const getUserId = () => userId;
-
-    const setUserId = (newUserId) => {
-      userId = newUserId;
-    };
-
-    const getAssignmentById = (assignmentId) => {
-      return assignments.find(a => a.assignment_id === parseInt(assignmentId));
-    };
-
-    const getAssignments = () => [...assignments];
-
-    const setAssignments = (newAssignments) => {
-      assignments = Array.isArray(newAssignments) ? [...newAssignments] : [];
-      return getAssignments();
-    };
-
-    const addAssignment = (assignmentData) => {
-      if (!assignmentData || typeof assignmentData !== 'object') return getAssignments();
-
-      assignments = assignments.filter(a => a.assignment_id !== assignmentData.assignment_id);
-      assignments = [...assignments, assignmentData];
-
-      // ✅ Sắp xếp theo assignment_id (số tăng dần)
-      assignments = assignments.sort((a, b) => (a.assignment_id || 0) - (b.assignment_id || 0));
-
-      return getAssignments();
-    };
-
-
-    // --- HÀM fetchAssignments() NỘI TUYẾN ĐÃ BỊ XÓA ---
-
-
     // --- Nội dung từ: ui.js ---
     const autoResize = (el) => {
       el.style.height = "auto";
@@ -262,7 +199,7 @@
             const trimmed = part.trim();
             const ansKey = trimmed.substring(0, 1);
             const content = trimmed.substring(2).trim();
-            const isCorrect = (assignments.find(a =>
+            const isCorrect = (APP_STATE.getAssignments().find(a =>
               a.assignment_id == p.closest('[data-assignment_id]')?.dataset.assignment_id
             )?.answer || "").split(",").includes(ansKey);
 
@@ -287,16 +224,12 @@
     };
 
 
-    // ===== BẮT ĐẦU SỬA LỖI =====
-    // 1. KHAI BÁO 'elements' LÀ BIẾN TRỐNG Ở PHẠM VI TOÀN CỤC (CỦA SCRIPT)
+    // KHAI BÁO 'elements' LÀ BIẾN TRỐNG
     let elements = {};
-    // const elements = { ... } // <-- ĐÃ XÓA KHỎI ĐÂY
-    // ===== KẾT THÚC SỬA LỖI =====
 
 
     // --- Nội dung từ: handlers.js ---
     const RenderEditors = (assignments) => {
-      // Dòng này sẽ gây lỗi nếu 'elements.editors' là null
       elements.editors.innerHTML = "";
       assignments.forEach((assign, idx) => {
         createTextarea(elements.editors, assign, idx); 
@@ -307,19 +240,19 @@
       if (e.target.tagName !== "TEXTAREA") return;
       let assign = null;
       if (e.target.dataset.type == "question") {
-        assign = getAssignmentById(e.target.dataset.assignment_id); 
+        assign = APP_STATE.getAssignmentById(e.target.dataset.assignment_id); 
         assign.question = e.target.value;
       } else if (e.target.dataset.type == "answer") {
-        assign = getAssignmentById(e.target.dataset.assignment_id); 
+        assign = APP_STATE.getAssignmentById(e.target.dataset.assignment_id); 
         assign.answer = e.target.value;
 
       } else if (e.target.dataset.type == "solution") {
-        assign = getAssignmentById(e.target.dataset.assignment_id); 
+        assign = APP_STATE.getAssignmentById(e.target.dataset.assignment_id); 
         assign.solution_guide = e.target.value;
       }
       autoResize(e.target); 
-      addAssignment(assign) 
-      renderAssignments(getAssignments(), elements.preview) 
+      APP_STATE.addAssignment(assign) 
+      renderAssignments(APP_STATE.getAssignments(), elements.preview) 
     };
 
 
@@ -336,31 +269,31 @@
     const handleDeleteAssignment = (e) => {
       if (e.target.tagName !== "BUTTON") return;
       if (e.target.dataset.type == "delete") {
-        removeAssignmentById(e.target.dataset.assignment_id) 
-        console.log(getAssignments()) 
-        RenderEditors(getAssignments()) 
-        renderAssignments(getAssignments(), elements.preview) 
+        APP_STATE.removeAssignmentById(e.target.dataset.assignment_id) 
+        console.log(APP_STATE.getAssignments()) 
+        RenderEditors(APP_STATE.getAssignments()) 
+        renderAssignments(APP_STATE.getAssignments(), elements.preview) 
       }
     };
 
     const handleChangeScore = (e) => {
       if (e.target.tagName !== "INPUT") return;
       if (e.target.dataset.type == "score") {
-        let assign = getAssignmentById(e.target.dataset.assignment_id); 
+        let assign = APP_STATE.getAssignmentById(e.target.dataset.assignment_id); 
         assign.score = parseFloat(e.target.value);
-        addAssignment(assign) 
-        renderAssignments(getAssignments(), elements.preview) 
+        APP_STATE.addAssignment(assign) 
+        renderAssignments(APP_STATE.getAssignments(), elements.preview) 
       }
     };
 
     const handleSplitScore = (e) => {
-      const assignments = getAssignments(); 
+      const assignments = APP_STATE.getAssignments(); 
       assignments.forEach(assign => {
         assign.score = parseFloat((10 / assignments.length).toFixed(2));
       })
       RenderEditors(assignments);
-      setAssignments(assignments); 
-      renderAssignments(getAssignments(), elements.preview); 
+      APP_STATE.setAssignments(assignments); 
+      renderAssignments(APP_STATE.getAssignments(), elements.preview); 
     }
 
     const handlePreviewFocusClick = (e) => {
@@ -378,35 +311,35 @@
         console.log(e.target.dataset.key);
         console.log(e.target.dataset.assignment_id);
 
-        setCurrentKey(e.target.dataset.key); 
-        setCurrentAssignment(getAssignmentById(e.target.dataset.assignment_id)); 
+        APP_STATE.setCurrentKey(e.target.dataset.key); 
+        APP_STATE.setCurrentAssignment(APP_STATE.getAssignmentById(e.target.dataset.assignment_id)); 
 
-        elements.cropImage.src = getCurrentAssignment().images[getCurrentKey()]; 
+        elements.cropImage.src = APP_STATE.getCurrentAssignment().images[APP_STATE.getCurrentKey()]; 
         elements.imageModal.classList.remove("hidden");
         elements.imageModal.classList.add("flex");
-        if (getCropper()) getCropper().destroy(); 
-        setCropper(new Cropper(elements.cropImage, { aspectRatio: NaN, viewMode: 1 })); 
+        if (APP_STATE.getCropper()) APP_STATE.getCropper().destroy(); 
+        APP_STATE.setCropper(new Cropper(elements.cropImage, { aspectRatio: NaN, viewMode: 1 })); 
       }
     };
 
     // --- Cancel crop ---
     const handleCancelCrop = () => {
       document.getElementById("imageModal").classList.add("hidden");
-      if (getCropper()) getCropper().destroy(); 
-      setCropper(null); 
+      if (APP_STATE.getCropper()) APP_STATE.getCropper().destroy(); 
+      APP_STATE.setCropper(null); 
     };
 
     // --- Save crop ---
     const handleSaveCrop = () => {
-      if (!getCropper() || !getCurrentKey() || !getCurrentAssignment()) return; 
-      const canvas = getCropper().getCroppedCanvas({ maxWidth: 800, maxHeight: 800 }); 
+      if (!APP_STATE.getCropper() || !APP_STATE.getCurrentKey() || !APP_STATE.getCurrentAssignment()) return; 
+      const canvas = APP_STATE.getCropper().getCroppedCanvas({ maxWidth: 800, maxHeight: 800 }); 
       const newBase64 = canvas.toDataURL("image/png");
-      getCurrentAssignment().images[getCurrentKey()] = newBase64; 
+      APP_STATE.getCurrentAssignment().images[APP_STATE.getCurrentKey()] = newBase64; 
       document.getElementById("imageModal").classList.add("hidden");
-      getCropper().destroy(); 
-      setCropper(null); 
-      addAssignment(getCurrentAssignment()); 
-      renderAssignments(getAssignments(), elements.preview); 
+      APP_STATE.getCropper().destroy(); 
+      APP_STATE.setCropper(null); 
+      APP_STATE.addAssignment(APP_STATE.getCurrentAssignment()); 
+      renderAssignments(APP_STATE.getAssignments(), elements.preview); 
     };
 
 
@@ -414,12 +347,10 @@
     const initAssignmentManagement = async () => {
       console.log("initAssignmentManagement");
 
-      // ===== BẮT ĐẦU SỬA LỖI =====
-      // 2. DI CHUYỂN VIỆC KHỞI TẠO 'elements' VÀO BÊN TRONG HÀM NÀY
-      // Bây giờ, nó chỉ chạy sau khi DOM đã được tải
+      // Khởi tạo 'elements'
       elements = {
         preview: document.getElementById('preview'),
-        editors: document.getElementById('editors'), // <-- Sẽ không còn là 'null'
+        editors: document.getElementById('editors'), 
         imageModal: document.getElementById('imageModal'),
         cropImage: document.getElementById('cropImage'),
         cancelCrop: document.getElementById('cancelCrop'),
@@ -427,7 +358,6 @@
         splitCore: document.getElementById('splitCore'),
         downloadBtn: document.getElementById('downloadBtn'),
       };
-      // ===== KẾT THÚC SỬA LỖI =====
 
       marked.setOptions({
         highlight: function (code, lang) {
@@ -438,12 +368,11 @@
       });
 
       // Sử dụng hàm từ biến toàn cục
-      const assignments = await window.APP_MOCK_DATA.fetchAssignments(getUserId());
-      
-      // Bây giờ hàm này sẽ chạy đúng
+      let assignments = APP_STATE.getAssignments();
+
       RenderEditors(assignments); 
       renderAssignments(assignments, elements.preview); 
-      setAssignments(assignments); 
+      APP_STATE.setAssignments(assignments); 
       setupEventListeners();
     };
 
@@ -531,29 +460,29 @@
   <header class="no-print bg-white shadow-sm border-b border-border-light h-16 flex items-center justify-between px-6">
     <div class="flex items-center">
       <div class="flex items-center">
-        <img src="/static/images/71f227c390f489287c3a010d68ffeef1c50b867d.svg" alt="Logo" class="w-10 h-10 mr-3">
+        <img src="https://picsum.photos/40?random=1" alt="Logo" class="w-10 h-10 mr-3 rounded">
         <span class="text-xl font-bold font-gilroy text-text-primary">AronEdu</span>
       </div>
     </div>
 
     <div class="flex items-center space-x-4">
       <div class="relative">
-        <img src="/static/images/chat.svg" alt="Chat" class="w-6 h-6">
+        <img src="https://unpkg.com/lucide-static/icons/message-square.svg" alt="Chat" class="w-6 h-6">
       </div>
 
       <div class="relative">
-        <img src="/static/images/Bell.svg" alt="Notifications" class="w-6 h-6">
+        <img src="https://unpkg.com/lucide-static/icons/bell.svg" alt="Notifications" class="w-6 h-6">
         <span
           class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">5</span>
       </div>
 
       <div class="flex items-center space-x-3">
         <div class="relative">
-          <img src="/static/images/95bca3ecaf6d28d115834f85b6163b6e58e91c7c.png" alt="User Avatar"
+          <img src="https://picsum.photos/36?random=2" alt="User Avatar"
             class="w-9 h-9 rounded-full">
         </div>
         <span class="text-text-secondary text-sm font-inter">Thanh Luan</span>
-        <img src="/static/images/arrow.svg" alt="Dropdown" class="w-6 h-6">
+        <img src="https://unpkg.com/lucide-static/icons/chevron-down.svg" alt="Dropdown" class="w-6 h-6">
       </div>
     </div>
   </header>
@@ -567,32 +496,32 @@
 
     <div class="flex items-center gap-3">
       <div class="flex items-center h-10 bg-white border border-gray-300 rounded-lg px-3 gap-2 min-w-[16rem]">
-        <img src="/static/images/Tim_Kiem.png" alt="search" class="w-5 h-5 opacity-70" />
+        <img src="httpsG://unpkg.com/lucide-static/icons/search.svg" alt="search" class="w-5 h-5 opacity-70" />
         <input type="text" placeholder="Nhập số câu muốn tìm kiếm"
           class="flex-1 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-500" />
       </div>
 
       <button id="splitCore"
         class="flex items-center gap-1 bg-blue-600 text-white rounded-lg px-3 py-2 text-sm font-medium hover:bg-blue-700">
-        <img src="/static/images/Dau_Cong.png" alt="add" class="w-5 h-5" />
+        <img src="https://unpkg.com/lucide-static/icons/plus.svg" alt="add" class="w-5 h-5" style="filter: invert(1) brightness(2);">
         Chia điểm
       </button>
 
       <button
         class="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-blue-600 text-sm font-medium hover:bg-gray-50">
-        <img src="/static/images/Upload.svg" alt="upload" class="w-5 h-5" />
+        <img src="https://unpkg.com/lucide-static/icons/upload.svg" alt="upload" class="w-5 h-5" />
         Upload
       </button>
 
       <button id="downloadBtn"
         class="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-blue-600 text-sm font-medium hover:bg-gray-50">
-        <img src="/static/images/Download.svg" alt="download" class="w-5 h-5" />
+        <img src="https://unpkg.com/lucide-static/icons/download.svg" alt="download" class="w-5 h-5" />
         Tải xuống
       </button>
 
       <button
         class="flex items-center justify-center bg-white border border-gray-300 rounded-lg w-10 h-10 hover:bg-gray-50">
-        <img src="/static/images/Information.svg" alt="icon" class="w-5 h-5" />
+        <img src="https://unpkg.com/lucide-static/icons/info.svg" alt="icon" class="w-5 h-5" />
       </button>
     </div>
   </div>
