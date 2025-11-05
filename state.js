@@ -18,8 +18,14 @@ window.APP_STATE = (function() {
   let _assignments = [];
   let _userId = '';
   let _examSuggestions = [];
+  let _knowledgeData = null;
 
   // --- 2. Các hàm Getters / Setters cơ bản ---
+
+  const getKnowledgeData = () => _knowledgeData;
+  const setKnowledgeData = (newKnowledgeData) => {
+    _knowledgeData = newKnowledgeData;
+  };
 
   const getCurrentKey = () => _currentKey;
   const setCurrentKey = (newCurrentKey) => {
@@ -167,8 +173,50 @@ window.APP_STATE = (function() {
   };
   // ===== KẾT THÚC HÀM MỚI =====
 
+  const getKnowledgeDataByFilter = (gradeLevelName, subjectName, bookName) => {
+    // --- BẮT ĐẦU LOGIC LỌC ---
+
+    // 1. Lọc theo Khối (grade_level_name)
+    const grade = _knowledgeData.education_data.find(
+      g => g.grade_level_name === gradeLevelName
+    );
+    if (!grade) {
+      console.warn(`Không tìm thấy Khối: ${gradeLevelName}`);
+      return []; // Trả về mảng rỗng nếu không tìm thấy
+    }
+
+    // 2. Lọc theo Môn học (subject_name)
+    if (!grade.subjects) return [];
+    const subject = grade.subjects.find(
+      s => s.subject_name === subjectName
+    );
+    if (!subject) {
+      console.warn(`Không tìm thấy Môn học: ${subjectName}`);
+      return [];
+    }
+
+    // 3. Lọc theo Sách (book_name)
+    if (!subject.books) return [];
+    const book = subject.books.find(
+      b => b.book_name === bookName
+    );
+    if (!book) {
+      console.warn(`Không tìm thấy Sách: ${bookName}`);
+      return [];
+    }
+
+    // 4. Trả về mảng 'chapters' tìm được
+    // Đây chính là dữ liệu "knowledge_source_data" mới mà bạn muốn
+    return book.chapters || [];
+  }
+
+
   // --- 4. Expose Public API ---
   // Chỉ trả về các hàm mà bên ngoài cần gọi.
+
+
+
+  
   return {
     getCurrentKey,
     setCurrentKey,
@@ -193,7 +241,10 @@ window.APP_STATE = (function() {
     setExamSuggestions,
 
     // ===== EXPOSE HÀM MỚI =====
-    setAssignmentsFromBatchId
+    setAssignmentsFromBatchId,
+    getKnowledgeDataByFilter,
+    getKnowledgeData,
+    setKnowledgeData
   };
 
 })(); // <-- IIFE (Immediately Invoked Function Expression)

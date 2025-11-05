@@ -473,40 +473,7 @@ window.APP_MOCK_DATA = {
       ]
     };
 
-    // --- BẮT ĐẦU LOGIC LỌC ---
-
-    // 1. Lọc theo Khối (grade_level_name)
-    const grade = knowledge_data_json.education_data.find(
-      g => g.grade_level_name === grade_level_name
-    );
-    if (!grade) {
-      console.warn(`Không tìm thấy Khối: ${grade_level_name}`);
-      return []; // Trả về mảng rỗng nếu không tìm thấy
-    }
-
-    // 2. Lọc theo Môn học (subject_name)
-    if (!grade.subjects) return [];
-    const subject = grade.subjects.find(
-      s => s.subject_name === subject_name
-    );
-    if (!subject) {
-      console.warn(`Không tìm thấy Môn học: ${subject_name}`);
-      return [];
-    }
-
-    // 3. Lọc theo Sách (book_name)
-    if (!subject.books) return [];
-    const book = subject.books.find(
-      b => b.book_name === book_name
-    );
-    if (!book) {
-      console.warn(`Không tìm thấy Sách: ${book_name}`);
-      return [];
-    }
-
-    // 4. Trả về mảng 'chapters' tìm được
-    // Đây chính là dữ liệu "knowledge_source_data" mới mà bạn muốn
-    return book.chapters || [];
+    return knowledge_data_json;
   }
 
 }; // <-- Đóng đối tượng (object) toàn cục

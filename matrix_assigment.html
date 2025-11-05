@@ -32,6 +32,8 @@
     </style>
 
     <script src="./mock_data_central.js"></script>
+    <script src="./state.js"></script>
+
     </head>
 
 <body class="bg-gray-50">
@@ -171,11 +173,9 @@
             const defaultBook = "Toán 10 - Kết nối tri thức";
 
             // Gọi hàm từ biến toàn cục đã được tải trong <head>
-            const knowledgeSourceData = window.APP_MOCK_DATA.getKnowledgeData(
-                defaultGrade,
-                defaultSubject,
-                defaultBook
-            );
+            const knowledgeSourceDataSrc = window.APP_MOCK_DATA.getKnowledgeData();
+            window.APP_STATE.setKnowledgeData(knowledgeSourceDataSrc);
+            const knowledgeSourceData = window.APP_STATE.getKnowledgeDataByFilter(defaultGrade, defaultSubject, defaultBook);
             
             // --- (Phần còn lại của hàm giữ nguyên) ---
 
