@@ -195,7 +195,8 @@
           
           console.log(window.APP_STATE.getAssignments());
           // 2. Chuyển hướng sang trang chi tiết
-          window.location.href = './assigment_detail.html';
+          // window.location.href = './assigment_detail.html';
+          window.location.href = `./assigment_detail.html?batch_id=${batchId}`;
         }
       }
       

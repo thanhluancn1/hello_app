@@ -342,6 +342,11 @@
       renderAssignments(APP_STATE.getAssignments(), elements.preview); 
     };
 
+    const getBatchIdFromURL = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('batch_id');
+    };
+
 
     // --- Nội dung từ: index.js (Part 2 - init) ---
     const initAssignmentManagement = async () => {
@@ -368,7 +373,23 @@
       });
 
       // Sử dụng hàm từ biến toàn cục
-      let assignments = APP_STATE.getAssignments();
+      let assignments = [];
+      const batchId = getBatchIdFromURL(); // Lấy ID từ URL
+
+      if (batchId) {
+        // TRƯỜNG HỢP 1: Có batch_id (Click từ trang suggestions)
+        console.log(`Đang tải dữ liệu cho batch ID: ${batchId}`);
+        
+        // 1. Phải tải dữ liệu nguồn (vì state bị mất khi refresh)
+        const suggestions = window.APP_MOCK_DATA.getExamSuggestions();
+        
+        // 2. Nạp dữ liệu nguồn vào state (để hàm setAssignmentsFromBatchId có thể chạy)
+        APP_STATE.setExamSuggestions(suggestions);
+        
+        // 3. Dùng state để tạo mảng assignments (hàm này cũng set _assignments)
+        assignments = APP_STATE.setAssignmentsFromBatchId(batchId);
+      
+      }
 
       RenderEditors(assignments); 
       renderAssignments(assignments, elements.preview); 
