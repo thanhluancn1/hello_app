@@ -12,43 +12,6 @@
 window.APP_MOCK_DATA = {
 
   /**
-   * 1. DỮ LIỆU TỪ `assigment_detail.html`
-   * (ID hard code theo yêu cầu trước)
-   */
-  fetchAssignments: async function (userId) {
-    console.log(`Đã gọi fetchAssignments (mock) cho userId: ${userId}`);
-    
-    const assignments_data = [
-      {
-        assignment_id: 1,
-        question: "Cho hàm số $y = f(x)$ có bảng biến thiên: \n{{img1}}\n\nA. 3\tB. 2\tC. 0\tD. 1",
-        solution_guide: "dựa vào bảng biến thiên xác định số giao điểm $y = f(x)$",
-        answer: "A,B",
-        score: 1,
-        images: { img1: "data:image/jpeg;base64,/9j/4AKKKKAP//Z" }
-      },
-      {
-        assignment_id: 2,
-        question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-        solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-        answer: "B",
-        score: 2,
-        images: {}
-      },
-      {
-        assignment_id: 3,
-        question: "Tính tích phân $\\int_0^1 x^2 dx$:\nA. 1/2\tB. 1/3\tC. 1/4\tD. 1/5",
-        solution_guide: "tích phân cơ bản $\\int_0^1 x^2 dx$",
-        answer: "B",
-        score: 2,
-        images: {}
-      }
-    ];
-
-    return Promise.resolve(JSON.parse(JSON.stringify(assignments_data)));
-  },
-
-  /**
    * 2. DỮ LIỆU TỪ `mock_data.js` (gốc)
    *
    * CHỈNH SỬA: Cập nhật các đối tượng "assignments" con.
