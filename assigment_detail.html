@@ -377,18 +377,22 @@
       const batchId = getBatchIdFromURL(); // Lấy ID từ URL
 
       if (batchId) {
-        // TRƯỜNG HỢP 1: Có batch_id (Click từ trang suggestions)
+        // TRƯỜNG HỢP 1: (Code hiện tại của bạn - đã đúng)
         console.log(`Đang tải dữ liệu cho batch ID: ${batchId}`);
-        
-        // 1. Phải tải dữ liệu nguồn (vì state bị mất khi refresh)
         const suggestions = window.APP_MOCK_DATA.getExamSuggestions();
-        
-        // 2. Nạp dữ liệu nguồn vào state (để hàm setAssignmentsFromBatchId có thể chạy)
         APP_STATE.setExamSuggestions(suggestions);
-        
-        // 3. Dùng state để tạo mảng assignments (hàm này cũng set _assignments)
         assignments = APP_STATE.setAssignmentsFromBatchId(batchId);
       
+      } else {
+        // ===== BẮT ĐẦU SỬA LỖI =====
+        // TRƯỜNG HỢP 2: Không có batch_id (Dự phòng)
+        console.log("Không có batch_id, tải dữ liệu dự phòng (batch 1)...");
+        
+        // Quyết định: Tải batch đầu tiên (batch_id = 1) làm mặc định
+        const suggestions = window.APP_MOCK_DATA.getExamSuggestions();
+        APP_STATE.setExamSuggestions(suggestions);
+        assignments = APP_STATE.setAssignmentsFromBatchId(1); // <-- Tải batch 1 làm mặc định
+        // ===== KẾT THÚC SỬA LỖI =====
       }
 
       RenderEditors(assignments); 
