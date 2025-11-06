@@ -38,9 +38,55 @@
 
 <body class="bg-gray-50">
 
-    <div class="flex w-full min-h-screen">
+    <div class="flex flex-col w-full min-h-screen">
 
-        <div class="w-3/12 p-4 border-r bg-white min-h-screen">
+      <div class="bg-white rounded-xl border border-border p-6 m-4">
+    <div class="grid grid-cols-4 gap-10">
+        
+        <div class="flex flex-row items-center gap-3">
+            <label class="text-muted text-base font-inter flex-shrink-0">Khối</label>
+            <div class="relative flex-1">
+                <select id="grade-dropdown"
+                    class="w-full h-12 px-4 pr-10 border border-gray-300 rounded-lg bg-white text-secondary focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
+                    </select>
+                <img src="https://unpkg.com/lucide-static/icons/chevron-down.svg" alt="Dropdown Arrow"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 pointer-events-none text-muted">
+            </div>
+        </div>
+
+        <div class="flex flex-row items-center gap-3">
+            <label class="text-muted text-base font-inter flex-shrink-0">Môn học</label>
+            <div class="relative flex-1">
+                <select id="subject-dropdown"
+                    class="w-full h-12 px-4 pr-10 border border-gray-300 rounded-lg bg-white text-secondary focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
+                    </select>
+                <img src="https://unpkg.com/lucide-static/icons/chevron-down.svg" alt="Dropdown Arrow"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 pointer-events-none text-muted">
+            </div>
+        </div>
+    
+        <div class="flex flex-row items-center gap-3">
+            <label class="text-muted text-base font-inter flex-shrink-0">Sách</label>
+            <div class="relative flex-1">
+                <select id="book-name-dropdown" class="w-full h-12 px-4 pr-10 border border-gray-300 rounded-lg bg-white text-secondary focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
+                    </select>
+                <img src="https://unpkg.com/lucide-static/icons/chevron-down.svg" alt="Dropdown Arrow"
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 pointer-events-none text-muted">
+            </div>
+        </div>
+
+        <div class="flex flex-row items-center gap-3">
+            <label class="text-muted text-base font-inter flex-shrink-0">Tên ma trận</label>
+            <input type="text" id="matrix-name-input"
+                   class="flex-1 w-full h-12 px-4 border border-gray-300 rounded-lg bg-white text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                   placeholder="Nhập tên ma trận...">
+        </div>
+
+    </div>
+</div>
+
+        <div class="flex w-full flex-1">
+             <div class="w-3/12 p-4 border-r bg-white min-h-screen">
             <div class="mb-4">
                 <h1 class="text-base font-bold text-black uppercase tracking-wide">
                     Nội Dung Kiến Thức
@@ -53,8 +99,7 @@
         <div class="w-9/12 p-4">
             <div class="max-w-7xl mx-auto">
                 <div class="mb-6">
-                    <h1 class="text-2xl font-semibold text-gray-900 mb-2">Bảng Đề Xuất Đề Thi</h1>
-                    <p class="text-gray-600">Quản lý và phân bổ câu hỏi theo mức độ nhận thức</p>
+                    <h1 class="text-base font-bold text-black uppercase mb-2">Bảng Đề Xuất Đề Thi</h1>
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -146,109 +191,110 @@
                 </div>
             </div>
         </div>
+        </div>
+
+       
 
     </div>
 
     <script>
         // --- NGUỒN DỮ LIỆU ---
-
-        // 2. XÓA BỎ DỮ LIỆU CŨ TỪ
-        // [Nguồn: thanhluancn1/hello_app/hello_app-fc1c05dbd6e940d558c498b242e83f39c6891085/matrix_assigment.html]
-        // const knowledgeSourceData = [ ... ]; // <-- ĐÃ XÓA
-
-        // Dữ liệu cho BÊN PHẢI (vẫn giữ nguyên)
-        let knowledge_components = [];
+        let knowledge_components = []; // Dữ liệu cho BÊN PHẢI (ma trận)
+        // Biến này sẽ lưu trữ dữ liệu thô từ mock
+        let knowledgeSourceDataSrc = null; 
 
         // --- CÁC HÀM CHO BÊN TRÁI (KNOWLEDGE CONTENT) ---
 
         /**
-         * Render toàn bộ nội dung cây kiến thức bên trái
+         * Render cây kiến thức (BÊN TRÁI)
+         * Hàm này giờ NHẬN dữ liệu chapters đã được lọc
          */
-        function renderKnowledgeContent() {
-            
-            // 3. GỌI HÀM MỚI VỚI FILTER MẶC ĐỊNH
-            // Các giá trị này được lấy từ 'knowledge_data.json'
-            const defaultGrade = "Khối 10";
-            const defaultSubject = "Toán học";
-            const defaultBook = "Toán 10 - Kết nối tri thức";
-
-            // Gọi hàm từ biến toàn cục đã được tải trong <head>
-            const knowledgeSourceDataSrc = window.APP_MOCK_DATA.getKnowledgeData();
-            window.APP_STATE.setKnowledgeData(knowledgeSourceDataSrc);
-            const knowledgeSourceData = window.APP_STATE.getKnowledgeDataByFilter(defaultGrade, defaultSubject, defaultBook);
-            
-            // --- (Phần còn lại của hàm giữ nguyên) ---
-
+        function renderKnowledgeContent(chaptersData) {
             const container = document.getElementById('content-placeholder');
             if (!container) return;
 
+            // Xóa sạch nội dung cây kiến thức cũ
+            container.innerHTML = '';
+            // Reset mảng component ma trận
+            knowledge_components = [];
+            renderExamTable(); // Cập nhật bảng ma trận (thành rỗng)
+
             let allHtmlContent = '';
 
-            knowledgeSourceData.forEach(chapter => {
-                // Đổi 'chapter.chapter' thành 'chapter.chapter_number'
-                // và 'chapter.chapter_name' thành 'chapter.chapter_name'
-                // để khớp với cấu trúc dữ liệu mới
+            // Lặp qua 'chaptersData' (tham số)
+            if (!chaptersData || chaptersData.length === 0) {
+                container.innerHTML = '<p class="text-muted p-4">Không tìm thấy nội dung kiến thức.</p>';
+                return;
+            }
+            
+            chaptersData.forEach(chapter => {
                 const chapterTextId = `text-chapter-${chapter.chapter_id}`;
                 const chapterContentId = `content-chapter-${chapter.chapter_id}`;
 
                 let lessonsHtml = '';
-                chapter.lessons.forEach(lesson => {
-                    const lessonTextId = `text-lesson-${lesson.lesson_id}`;
-                    const lessonContentId = `content-lesson-${lesson.lesson_id}`;
+                // Kiểm tra xem lessons có tồn tại không
+                if (chapter.lessons && Array.isArray(chapter.lessons)) {
+                    chapter.lessons.forEach(lesson => {
+                        const lessonTextId = `text-lesson-${lesson.lesson_id}`;
+                        const lessonContentId = `content-lesson-${lesson.lesson_id}`;
 
-                    let knowledgeHtml = '';
-                    
-                    lesson.knowledge_units.forEach(content => {
-                        const knowledgeTextId = `text-knowledge-${content.knowledge_id}`; 
+                        let knowledgeHtml = '';
                         
-                        knowledgeHtml += `
-                        <div class="flex gap-2 items-start">
-                            <div class="flex items-center mt-0.5">
-                                <input type="checkbox" 
-                                    data-target-text="${knowledgeTextId}"
-                                    data-type="knowledge"
-                                    data-chapter-id="${chapter.chapter_id}"
-                                    data-lesson-id="${lesson.lesson_id}"
-                                    data-knowledge-id="${content.knowledge_id}"
-                                    data-content="${content.description}"
-                                    class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
+                        // Kiểm tra xem knowledge_units có tồn tại không
+                        if (lesson.knowledge_units && Array.isArray(lesson.knowledge_units)) {
+                            lesson.knowledge_units.forEach(content => {
+                                const knowledgeTextId = `text-knowledge-${content.knowledge_id}`; 
+                                
+                                knowledgeHtml += `
+                                <div class="flex gap-2 items-start">
+                                    <div class="flex items-center mt-0.5">
+                                        <input type="checkbox" 
+                                            data-target-text="${knowledgeTextId}"
+                                            data-type="knowledge"
+                                            data-chapter-id="${chapter.chapter_id}"
+                                            data-lesson-id="${lesson.lesson_id}"
+                                            data-knowledge-id="${content.knowledge_id}"
+                                            data-content="${content.description}"
+                                            class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
+                                    </div>
+                                    <p id="${knowledgeTextId}" class="text-sm font-medium text-black leading-5">
+                                        ${content.description}
+                                    </p>
+                                </div>
+                                `;
+                            });
+                        }
+
+
+                        lessonsHtml += `
+                        <div class="space-y-3">
+                            <div class="lesson flex items-center justify-between cursor-pointer" data-toggle-target="#${lessonContentId}">
+                                <div class="flex gap-2 items-center">
+                                    <div class="flex items-center mt-0.5">
+                                        <input type="checkbox" 
+                                            data-target-text="${lessonTextId}"
+                                            data-type="lesson"
+                                            data-chapter-id="${chapter.chapter_id}"
+                                            data-lesson-id="${lesson.lesson_id}"
+                                            data-knowledge-id="" 
+                                            data-content="${lesson.lesson_name}"
+                                            class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
+                                    </div>
+                                    <p id="${lessonTextId}" class="text-base font-medium text-black">${lesson.lesson_name}</p>
+                                </div>
+                                <div class="w-6 h-6 flex-shrink-0">
+                                    <svg class="w-full h-full text-black rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
                             </div>
-                            <p id="${knowledgeTextId}" class="text-sm font-medium text-black leading-5">
-                                ${content.description}
-                            </p>
+                            <div id="${lessonContentId}" class="hidden space-y-3 ml-8">
+                                ${knowledgeHtml}
+                            </div>
                         </div>
                         `;
                     });
-
-
-                    lessonsHtml += `
-                    <div class="space-y-3">
-                        <div class="lesson flex items-center justify-between cursor-pointer" data-toggle-target="#${lessonContentId}">
-                            <div class="flex gap-2 items-center">
-                                <div class="flex items-center mt-0.5">
-                                    <input type="checkbox" 
-                                        data-target-text="${lessonTextId}"
-                                        data-type="lesson"
-                                        data-chapter-id="${chapter.chapter_id}"
-                                        data-lesson-id="${lesson.lesson_id}"
-                                        data-knowledge-id="" 
-                                        data-content="${lesson.lesson_name}"
-                                        class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
-                                </div>
-                                <p id="${lessonTextId}" class="text-base font-medium text-black">${lesson.lesson_name}</p>
-                            </div>
-                            <div class="w-6 h-6 flex-shrink-0">
-                                <svg class="w-full h-full text-black rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div id="${lessonContentId}" class="hidden space-y-3 ml-8">
-                            ${knowledgeHtml}
-                        </div>
-                    </div>
-                    `;
-                });
+                }
 
 
                 allHtmlContent += `
@@ -517,15 +563,149 @@
 
         // --- KHỞI CHẠY ---
         document.addEventListener('DOMContentLoaded', function () {
-            // Sửa lỗi: Đảm bảo các hàm này chỉ chạy 
-            // sau khi `elements` được định nghĩa
-            const elements = {
-                tableBody: document.getElementById('table-body')
-                // Thêm các elements khác nếu cần
-            };
+            
+            // Lấy DOM element cho các filter
+            const gradeDropdown = document.getElementById('grade-dropdown');
+            const subjectDropdown = document.getElementById('subject-dropdown');
+            const bookNameDropdown = document.getElementById('book-name-dropdown');
+            const contentPlaceholder = document.getElementById('content-placeholder');
 
-            renderKnowledgeContent(); 
-            renderExamTable();        
+            // --- 1. TẢI DỮ LIỆU GỐC (1 LẦN) ---
+            // Dùng tên biến bạn gợi ý: knowledgeSourceDataSrc
+            knowledgeSourceDataSrc = window.APP_MOCK_DATA.getKnowledgeDataJSON();
+            window.APP_STATE.setKnowledgeSourceData(knowledgeSourceDataSrc);
+            // (Không cần lưu vào state nếu state.js không có hàm setKnowledgeSourceData)
+            // if (APP_STATE.setKnowledgeSourceData) {
+            //     APP_STATE.setKnowledgeSourceData(knowledgeSourceDataSrc);
+            // }
+
+
+            // --- 2. CÁC HÀM ĐIỀN DỮ LIỆU FILTER ---
+
+            /**
+             * Hàm trợ giúp điền data vào dropdown
+             * @param {HTMLSelectElement} dropdown - Element <select>
+             * @param {Array} data - Mảng dữ liệu (ví dụ: education_data)
+             * @param {String} valueKey - Key để lấy value (ví dụ: 'grade_level_name')
+             * @param {String} textKey - Key để lấy text (ví dụ: 'grade_level_name')
+             * @param {String} placeholder - Text hiển thị mặc định
+             */
+            function populateDropdown(dropdown, data, valueKey, textKey, placeholder) {
+                dropdown.innerHTML = `<option value="">${placeholder}</option>`;
+                if (data && Array.isArray(data)) {
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item[valueKey];
+                        option.textContent = item[textKey];
+                        dropdown.appendChild(option);
+                    });
+                }
+                // Bật/tắt dropdown
+                dropdown.disabled = (!data || data.length === 0);
+            }
+
+            /**
+             * Hàm xóa sạch nội dung cây kiến thức và ma trận
+             */
+            function clearContent() {
+                contentPlaceholder.innerHTML = '<p class="text-muted p-4">Vui lòng chọn đầy đủ filter...</p>';
+                knowledge_components = [];
+                renderExamTable(); // Cập nhật (xóa) bảng ma trận
+            }
+
+            // --- 3. LOGIC ĐIỀN DỮ LIỆU VÀ GẮN SỰ KIỆN ---
+
+            // 3.1. Điền "Khối"
+            populateDropdown(
+                gradeDropdown, 
+                knowledgeSourceDataSrc.education_data, 
+                'grade_level_name', 
+                'grade_level_name', 
+                'Chọn khối'
+            );
+            // Mặc định, xóa nội dung
+            clearContent();
+
+            // 3.2. Sự kiện khi chọn "Khối"
+            gradeDropdown.addEventListener('change', () => {
+                const selectedGradeName = gradeDropdown.value;
+                
+                // Reset các filter con và nội dung
+                populateDropdown(subjectDropdown, [], '', '', 'Chọn môn học');
+                populateDropdown(bookNameDropdown, [], '', '', 'Chọn sách');
+                clearContent();
+
+                if (selectedGradeName) {
+                    const selectedGrade = knowledgeSourceDataSrc.education_data.find(
+                        g => g.grade_level_name === selectedGradeName
+                    );
+                    if (selectedGrade && selectedGrade.subjects) {
+                        populateDropdown(
+                            subjectDropdown, 
+                            selectedGrade.subjects, 
+                            'subject_name', 
+                            'subject_name', 
+                            'Chọn môn học'
+                        );
+                    }
+                }
+            });
+
+            // 3.3. Sự kiện khi chọn "Môn học"
+            subjectDropdown.addEventListener('change', () => {
+                const selectedGradeName = gradeDropdown.value;
+                const selectedSubjectName = subjectDropdown.value;
+
+                // Reset filter con và nội dung
+                populateDropdown(bookNameDropdown, [], '', '', 'Chọn sách');
+                clearContent();
+
+                if (selectedGradeName && selectedSubjectName) {
+                    const selectedGrade = knowledgeSourceDataSrc.education_data.find(
+                        g => g.grade_level_name === selectedGradeName
+                    );
+                    const selectedSubject = selectedGrade.subjects.find(
+                        s => s.subject_name === selectedSubjectName
+                    );
+                    
+                    if (selectedSubject && selectedSubject.books) {
+                        populateDropdown(
+                            bookNameDropdown, 
+                            selectedSubject.books, 
+                            'book_name', 
+                            'book_name', 
+                            'Chọn sách'
+                        );
+                    }
+                }
+            });
+
+            // 3.4. Sự kiện khi chọn "Book Name" (Bước cuối)
+            bookNameDropdown.addEventListener('change', () => {
+                const selectedGradeName = gradeDropdown.value;
+                const selectedSubjectName = subjectDropdown.value;
+                const selectedBookName = bookNameDropdown.value;
+                
+                clearContent(); // Xóa nội dung cũ
+                console.log(window.APP_STATE.getKnowledgeSourceData());
+                console.log(selectedGradeName, selectedSubjectName, selectedBookName);
+
+                if (selectedGradeName && selectedSubjectName && selectedBookName) {
+                    // Gọi hàm lọc từ state.js
+                    // (Sử dụng tên hàm getKnowledgeData như trong tệp state.js của bạn)
+                    const chaptersData = window.APP_STATE.getKnowledgeDataByFilter(
+                        selectedGradeName,
+                        selectedSubjectName,
+                        selectedBookName
+                    );
+
+                    // Lưu kết quả lọc vào state (để các hàm khác có thể dùng)
+                    APP_STATE.setKnowledgeData(chaptersData);
+
+                    // Render cây kiến thức với dữ liệu đã lọc
+                    renderKnowledgeContent(chaptersData);
+                }
+            });
         });
     </script>
 </body>

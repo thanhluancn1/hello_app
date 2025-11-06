@@ -293,7 +293,7 @@ window.APP_MOCK_DATA = {
    * 3. DỮ LIỆU VÀ HÀM LỌC TỪ `knowledge_data.json`
    * (Đã hard code ID toàn cục theo yêu cầu trước)
    */
-  getKnowledgeData: function (grade_level_name, subject_name, book_name) {
+  getKnowledgeDataJSON: function () {
     
     // Nguồn dữ liệu JSON đầy đủ
     const knowledge_data_json = {
