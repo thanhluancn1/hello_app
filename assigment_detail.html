@@ -141,7 +141,7 @@
       preview.innerHTML = '';
 
       assignments.forEach((assign, idx) => {
-        let html = `<div class="mb-6 pb-2">`;
+        let html = `<div class="pb-2">`;
 
         // --- Câu hỏi ---
         if (assign.question) {
@@ -169,7 +169,10 @@
         }
 
         // --- Hướng dẫn giải ---
-        if (assign.solution_guide) {
+        const hideSolutions = elements.hideSolutions && elements.hideSolutions.checked;
+
+        // --- Hướng dẫn giải ---
+        if (assign.solution_guide && !hideSolutions) {
           html += `
           <div class="solution-guide-block p-2 border-l-4 border-green-400 bg-green-50 [&_p]:m-0"
                data-assignment_id="${assign.assignment_id}"
@@ -183,6 +186,7 @@
       });
 
       // --- Format lại phần đáp án ---
+      const hideAnswers = elements.hideAnswers && elements.hideAnswers.checked;
       preview.querySelectorAll("p").forEach(p => {
         if (/([A-D]\.\s)/.test(p.innerHTML)) {
           const match = p.innerHTML.match(/(.*?)([A-D]\..*)/s);
@@ -203,9 +207,11 @@
               a.assignment_id == p.closest('[data-assignment_id]')?.dataset.assignment_id
             )?.answer || "").split(",").includes(ansKey);
 
+            const showCorrectIndicator = isCorrect && !hideAnswers;
+
             innerHTML += `
             <span class="flex items-center gap-2 px-3 py-2 flex-1">
-              ${isCorrect
+              ${showCorrectIndicator
                 ? `<span class="w-6 h-6 flex items-center justify-center border-2 border-gray-700 rounded-full font-semibold text-gray-700">${ansKey}</span>`
                 : `<span class="font-semibold text-gray-700">${ansKey}.</span>`
               }
@@ -362,6 +368,8 @@
         saveCrop: document.getElementById('saveCrop'),
         splitCore: document.getElementById('splitCore'),
         downloadBtn: document.getElementById('downloadBtn'),
+        hideSolutions: document.getElementById('hideSolutions'),
+        hideAnswers: document.getElementById('hideAnswers'),
       };
 
       marked.setOptions({
@@ -410,7 +418,13 @@
       elements.splitCore.addEventListener('click', handleSplitScore); 
       elements.preview.addEventListener('click', handleImageClick); 
       elements.preview.addEventListener('click', handlePreviewFocusClick); 
-      elements.downloadBtn.addEventListener('click', handleDownloadBtn); 
+      elements.downloadBtn.addEventListener('click', handleDownloadBtn);
+      elements.hideSolutions.addEventListener('change', () => {
+        renderAssignments(APP_STATE.getAssignments(), elements.preview);
+      });
+      elements.hideAnswers.addEventListener('change', () => {
+        renderAssignments(APP_STATE.getAssignments(), elements.preview);
+      }); 
     };
 
     // Initialize the app when the DOM is fully loaded
@@ -520,10 +534,13 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <div class="flex items-center h-10 bg-white border border-gray-300 rounded-lg px-3 gap-2 min-w-[16rem]">
-        <img src="httpsG://unpkg.com/lucide-static/icons/search.svg" alt="search" class="w-5 h-5 opacity-70" />
-        <input type="text" placeholder="Nhập số câu muốn tìm kiếm"
-          class="flex-1 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-500" />
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="hideAnswers" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+        <label for="hideAnswers" class="text-sm text-gray-700">Ẩn đáp án</label>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="hideSolutions" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+        <label for="hideSolutions" class="text-sm text-gray-700">Ẩn hướng dẫn giải</label>
       </div>
 
       <button id="splitCore"

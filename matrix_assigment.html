@@ -254,11 +254,11 @@
                                             data-chapter-id="${chapter.chapter_id}"
                                             data-lesson-id="${lesson.lesson_id}"
                                             data-knowledge-id="${content.knowledge_id}"
-                                            data-content="${content.description}"
+                                            data-content="${content.content}"
                                             class="w-5 h-5 text-black border-gray-300 rounded-full focus:ring-black focus:ring-2 cursor-pointer" />
                                     </div>
                                     <p id="${knowledgeTextId}" class="text-sm font-medium text-black leading-5">
-                                        ${content.description}
+                                        ${content.content}
                                     </p>
                                 </div>
                                 `;
@@ -432,6 +432,7 @@
                     return !(matchChapter && matchLesson && matchKnowledge);
                 });
             }
+            console.log(knowledge_components);
             renderExamTable();
         }
 
@@ -465,7 +466,7 @@
          * Tạo HTML cho một hàng (tr) của bảng bên phải
          */
         function createTableRow(item, stt, pathString) {
-            const description = item.content;
+            const content = item.content;
             
             const createInput = (property, value) => {
                 return `<input 
@@ -481,7 +482,7 @@
             return `
                 <tr class="border-t border-gray-200 hover:bg-gray-50">
                     <td class="px-4 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${stt}</td>
-                    <td class="px-4 py-3 text-sm border-r border-gray-200">${description}</td>
+                    <td class="px-4 py-3 text-sm border-r border-gray-200">${content}</td>
                     <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('recognition', item.recognition)}</td>
                     <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('understanding', item.understanding)}</td>
                     <td class="px-3 py-3 text-center text-sm text-gray-600 border-r border-gray-200">${createInput('application', item.application)}</td>

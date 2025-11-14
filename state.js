@@ -20,7 +20,12 @@ window.APP_STATE = (function() {
   let _examSuggestions = [];
   let _knowledgeData = null;
   let _knowledgeSourceData = null; // Biến lưu data thô
+  let _knowledgeComponents = null;
 
+  const getKnowledgeComponents = () => _knowledgeComponents;
+  const setKnowledgeComponents = (newKnowledgeComponents) => {
+    _knowledgeComponents = newKnowledgeComponents;
+  };
 
   // <-- THÊM CÁC HÀM NÀY -->
   const getKnowledgeSourceData = () => _knowledgeSourceData;
@@ -65,6 +70,22 @@ window.APP_STATE = (function() {
     return getAssignments();
   };
 
+  const getAssignmentById = (assignmentId) => {
+    return _assignments.find(a => a.assignment_id === parseInt(assignmentId));
+  };
+
+  const addAssignment = (assignmentData) => {
+    if (!assignmentData || typeof assignmentData !== 'object') return getAssignments();
+  
+    _assignments = _assignments.filter(a => a.assignment_id !== assignmentData.assignment_id);
+    _assignments = [..._assignments, assignmentData];
+  
+    // ✅ Sắp xếp theo assignment_id (số tăng dần)
+    _assignments = _assignments.sort((a, b) => (a.assignment_id || 0) - (b.assignment_id || 0));
+  
+    return getAssignments();
+  };
+
   const getExamSuggestions = () => {
     return [..._examSuggestions];
   };
@@ -102,6 +123,45 @@ window.APP_STATE = (function() {
       _assignments = [];
     }
     return getAssignments();
+  };
+
+  const removeAssignmentById = (assignmentId) => {
+    _assignments = _assignments.filter(a => a.assignment_id !== parseInt(assignmentId));
+    setAssignments(_assignments);
+    return getAssignments();
+  };
+
+
+  /**
+   * (ĐÃ SỬA LỖI)
+   * Hàm logic lọc, chạy trên dữ liệu thô đã lưu trong state
+   */
+  const setKnowledgeComponentsFromBatchId = (batchId) => {
+    const targetBatchId = parseInt(batchId);
+    if (isNaN(targetBatchId)) {
+      console.warn("setKnowledgeComponentsFromBatchId: batchId không hợp lệ.", batchId);
+      setKnowledgeComponents([]);
+      return getKnowledgeComponents();
+    }
+
+    let foundBatch = null;
+    for (const lesson of _examSuggestions) {
+      if (lesson.assignment_batches && Array.isArray(lesson.assignment_batches)) {
+        foundBatch = lesson.assignment_batches.find(batch => batch.batch_id === targetBatchId);
+        if (foundBatch) break;
+      }
+    }
+
+    if (foundBatch && Array.isArray(foundBatch.knowledge_components)) {
+      const newKnowledgeComponents = JSON.parse(JSON.stringify(foundBatch.knowledge_components));
+      setKnowledgeComponents(newKnowledgeComponents);
+      console.log(`APP_STATE: Đã nạp ${newKnowledgeComponents.length} knowledge components từ batch ID: ${batchId}`);
+    } else {
+      console.warn(`APP_STATE: Không tìm thấy knowledge components cho batch ID: ${batchId}`);
+      setKnowledgeComponents([]);
+    }
+
+    return getKnowledgeComponents();
   };
 
 
@@ -177,6 +237,9 @@ window.APP_STATE = (function() {
     
     getAssignments,
     setAssignments,
+    addAssignment,
+    getAssignmentById,
+    removeAssignmentById,
     
     getExamSuggestions,
     setExamSuggestions,
@@ -192,8 +255,12 @@ window.APP_STATE = (function() {
     setKnowledgeSourceData,
 
     // Đổi tên hàm lọc cho rõ ràng (theo tên bạn gợi ý)
-    getKnowledgeDataByFilter: getKnowledgeDataByFilter
+    getKnowledgeDataByFilter: getKnowledgeDataByFilter,
     // ===== KẾT THÚC SỬA ĐỔI =====
+
+    getKnowledgeComponents,
+    setKnowledgeComponents,
+    setKnowledgeComponentsFromBatchId,
   };
 
 })(); // <-- IIFE (Immediately Invoked Function Expression)

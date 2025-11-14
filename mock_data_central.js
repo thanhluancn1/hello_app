@@ -40,8 +40,10 @@ window.APP_MOCK_DATA = {
           "knowledge_components": [
             {
               "component_id": 1,
+              "chapter_id": 1,
+              "lesson_id": 1,
               "knowledge_id": 1, 
-              "knowledge_name": "Khái niệm mệnh đề và các phép toán",
+              "content": "Khái niệm mệnh đề và các phép toán",
               "knowledge_type": "Concept",
               
               "recognition": 3,
@@ -100,8 +102,10 @@ window.APP_MOCK_DATA = {
             },
             {
               "component_id": 2,
+              "chapter_id": 1,
+              "lesson_id": 2,
               "knowledge_id": 2, 
-              "knowledge_name": "Các phép toán trên tập hợp",
+              "content": "Các phép toán trên tập hợp",
               "knowledge_type": "Skill",
     
               "recognition": 2,
@@ -178,8 +182,10 @@ window.APP_MOCK_DATA = {
           "knowledge_components": [
             {
               "component_id": 3,
+              "chapter_id": 1, // Giả định, vì không có trong data gốc
+              "lesson_id": 1, // Giả định
               "knowledge_id": 3, 
-              "knowledge_name": "Xét tính chẵn, lẻ của hàm số",
+              "content": "Xét tính chẵn, lẻ của hàm số",
               "knowledge_type": "Skill",
               
               "recognition": 1,
@@ -222,8 +228,10 @@ window.APP_MOCK_DATA = {
             },
             {
               "component_id": 4,
+              "chapter_id": 1, // Giả định
+              "lesson_id": 1, // Giả định
               "knowledge_id": 4, 
-              "knowledge_name": "Phân tích và tổng hợp vector",
+              "content": "Phân tích và tổng hợp vector",
               "knowledge_type": "Skill",
     
               "recognition": 0,
@@ -321,9 +329,9 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 1,
                           "lesson_name": "Bài 1: Mệnh đề",
                           "knowledge_units": [
-                            { "knowledge_id": 1, "description": "Hiểu khái niệm mệnh đề, mệnh đề chứa biến.", "knowledge_type": "Concept" },
-                            { "knowledge_id": 2, "description": "Biết cách xác định tính đúng/sai của một mệnh đề.", "knowledge_type": "Skill" },
-                            { "knowledge_id": 3, "description": "Hiểu về phép phủ định mệnh đề, mệnh đề kéo theo, mệnh đề tương đương.", "knowledge_type": "Concept" }
+                            { "knowledge_id": 1, "content": "Hiểu khái niệm mệnh đề, mệnh đề chứa biến.", "knowledge_type": "Concept" },
+                            { "knowledge_id": 2, "content": "Biết cách xác định tính đúng/sai của một mệnh đề.", "knowledge_type": "Skill" },
+                            { "knowledge_id": 3, "content": "Hiểu về phép phủ định mệnh đề, mệnh đề kéo theo, mệnh đề tương đương.", "knowledge_type": "Concept" }
                           ]
                         },
                         {
@@ -331,8 +339,8 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 2,
                           "lesson_name": "Bài 2: Tập hợp và các phép toán trên tập hợp",
                           "knowledge_units": [
-                            { "knowledge_id": 4, "description": "Nhận biết các tập hợp con và tập hợp bằng nhau.", "knowledge_type": "Concept" },
-                            { "knowledge_id": 5, "description": "Thực hiện các phép toán: hợp, giao, hiệu của hai tập hợp.", "knowledge_type": "Skill" }
+                            { "knowledge_id": 4, "content": "Nhận biết các tập hợp con và tập hợp bằng nhau.", "knowledge_type": "Concept" },
+                            { "knowledge_id": 5, "content": "Thực hiện các phép toán: hợp, giao, hiệu của hai tập hợp.", "knowledge_type": "Skill" }
                           ]
                         }
                       ]
@@ -347,7 +355,7 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 1,
                           "lesson_name": "Bài 3: Bất phương trình bậc nhất hai ẩn",
                           "knowledge_units": [
-                            { "knowledge_id": 6, "description": "Biểu diễn miền nghiệm của bất phương trình trên mặt phẳng tọa độ.", "knowledge_type": "Skill" }
+                            { "knowledge_id": 6, "content": "Biểu diễn miền nghiệm của bất phương trình trên mặt phẳng tọa độ.", "knowledge_type": "Skill" }
                           ]
                         }
                       ]
@@ -368,7 +376,7 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 1,
                           "lesson_name": "Bài 1: Mệnh đề, Mệnh đề phủ định",
                           "knowledge_units": [
-                            { "knowledge_id": 7, "description": "Phân biệt mệnh đề và mệnh đề chứa biến.", "knowledge_type": "Concept" }
+                            { "knowledge_id": 7, "content": "Phân biệt mệnh đề và mệnh đề chứa biến.", "knowledge_type": "Concept" }
                           ]
                         }
                       ]
@@ -395,8 +403,8 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 1,
                           "lesson_name": "Bài 1: Chuyển động thẳng đều",
                           "knowledge_units": [
-                            { "knowledge_id": 8, "description": "Viết phương trình chuyển động thẳng đều.", "knowledge_type": "Skill" },
-                            { "knowledge_id": 9, "description": "Vẽ đồ thị độ dịch chuyển - thời gian.", "knowledge_type": "Skill" }
+                            { "knowledge_id": 8, "content": "Viết phương trình chuyển động thẳng đều.", "knowledge_type": "Skill" },
+                            { "knowledge_id": 9, "content": "Vẽ đồ thị độ dịch chuyển - thời gian.", "knowledge_type": "Skill" }
                           ]
                         }
                       ]
@@ -430,8 +438,8 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 1,
                           "lesson_name": "Bài 1: Phản ứng thuận nghịch và trạng thái cân bằng",
                           "knowledge_units": [
-                            { "knowledge_id": 10, "description": "Phân biệt phản ứng một chiều và phản ứng thuận nghịch.", "knowledge_type": "Concept" },
-                            { "knowledge_id": 11, "description": "Hiểu khái niệm hằng số cân bằng (Kc) và ý nghĩa.", "knowledge_type": "Concept" }
+                            { "knowledge_id": 10, "content": "Phân biệt phản ứng một chiều và phản ứng thuận nghịch.", "knowledge_type": "Concept" },
+                            { "knowledge_id": 11, "content": "Hiểu khái niệm hằng số cân bằng (Kc) và ý nghĩa.", "knowledge_type": "Concept" }
                           ]
                         }
                       ]
@@ -458,8 +466,8 @@ window.APP_MOCK_DATA = {
                           "lesson_number": 1,
                           "lesson_name": "Đọc hiểu: Tây Tiến (Quang Dũng)",
                           "knowledge_units": [
-                            { "knowledge_id": 12, "description": "Phân tích hình tượng người lính Tây Tiến.", "knowledge_type": "Skill" },
-                            { "knowledge_id": 13, "description": "Cảm nhận vẻ đẹp bi tráng, lãng mạn của bài thơ.", "knowledge_type": "Skill" }
+                            { "knowledge_id": 12, "content": "Phân tích hình tượng người lính Tây Tiến.", "knowledge_type": "Skill" },
+                            { "knowledge_id": 13, "content": "Cảm nhận vẻ đẹp bi tráng, lãng mạn của bài thơ.", "knowledge_type": "Skill" }
                           ]
                         }
                       ]
