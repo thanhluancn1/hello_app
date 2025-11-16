@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Thi - Tải Dữ Liệu Động (MathJax)</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- --- THÊM MATHJAX --- -->
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        // Tái sử dụng theme màu
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e5eff',
+                        'text-primary': '#121212',
+                        'text-secondary': '#5a607f',
+                        'border-light': '#e6e9f4',
+                        'bg-light': '#f5f6fa',
+                        'status-active': '#06a561',
+                        'status-active-bg': '#defef0',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #question-text {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.75;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- 1. Header -->
+    <header class="bg-white border-b border-border-light shadow-sm flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl font-bold text-text-primary">Bài thi cuối kỳ: Toán Cao Cấp A1</h1>
+
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-text-secondary hidden md:block">Nguyễn Văn A</span>
+                    <button
+                        class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        Nộp bài
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. MAIN CONTAINER (KO SCROLL, chỉ chứa 2 cột) -->
+    <div class="flex flex-1 min-h-0 max-w-7xl mx-auto w-full">
+
+        <!-- 2.1 MAIN PANEL (KHÔNG SCROLL) -->
+        <!-- 2.1 MAIN PANEL (CÓ SCROLL RIÊNG CHO NỘI DUNG, NÚT LUÔN Ở ĐÁY) -->
+        <main class="flex-1 h-full overflow-hidden p-4 md:p-8">
+
+            <div
+                class="bg-white rounded-xl shadow-lg border border-border-light p-6 md:p-8 h-full flex flex-col min-h-0">
+
+                <!-- PHẦN NỘI DUNG CÂU HỎI (SCROLL) -->
+                <div class="flex-1 overflow-y-auto min-h-0">
+
+                    <div
+                        class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pb-4 border-b border-border-light">
+                        <h2 class="text-2xl font-semibold text-text-primary" id="question-number">
+                            Câu 1 <span class="text-lg font-medium text-text-secondary">/ 50</span>
+                        </h2>
+
+                        <div id="question-timer-wrapper"
+                            class="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-3 py-1.5 rounded-lg">
+                            <i class="bi bi-hourglass-split w-5 h-5"></i>
+                            <span class="font-medium">Thời gian câu này:</span>
+                            <span id="question-timer" class="font-bold text-lg">00:00</span>
+                        </div>
+                    </div>
+
+                    <div id="question-content" class="prose max-w-none mt-6">
+                        <p class="text-lg text-text-primary">Đang tải câu hỏi...</p>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <label for="answer-input" class="text-sm font-medium text-text-primary">Nhập câu trả
+                            lời:</label>
+                        <textarea id="answer-input" rows="3"
+                            class="w-full p-3 border border-border-light rounded-lg"></textarea>
+                    </div>
+
+                </div>
+
+                <!-- PHẦN NÚT ĐIỀU HƯỚNG (CỐ ĐỊNH DƯỚI CÙNG) -->
+                <div class="flex justify-between mt-8 pt-6 border-t border-border-light flex-shrink-0">
+                    <button id="prev-question-btn"
+                        class="bg-white border border-border-light text-text-secondary px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
+                        <i class="bi bi-arrow-left mr-1"></i> Câu trước
+                    </button>
+
+                    <button id="next-question-btn"
+                        class="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+                        Câu tiếp theo <i class="bi bi-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- 2.2 SIDEBAR (CHỈ PHẦN LIST SCROLL) -->
+        <aside class="w-72 bg-white border-l border-border-light flex flex-col flex-shrink-0 min-h-0">
+
+            <!-- SIDEBAR HEADER (CỐ ĐỊNH) -->
+            <div class="p-6 border-b border-border-light flex-shrink-0">
+                <div class="mb-4 p-4 bg-red-100 border border-red-200 rounded-lg text-center">
+                    <div class="flex items-center justify-center gap-2 text-red-700">
+                        <i class="bi bi-alarm-fill w-6 h-6"></i>
+                        <span class="text-sm font-medium uppercase">Thời gian còn lại</span>
+                    </div>
+                    <div id="total-timer" class="text-4xl font-bold text-red-600 mt-2">44:30</div>
+                </div>
+
+                <h3 class="text-text-primary font-semibold">Danh sách câu hỏi</h3>
+            </div>
+
+            <!-- SIDEBAR LIST (PHẦN DUY NHẤT SCROLL) -->
+            <div class="flex-1 overflow-y-auto p-6 min-h-0">
+                <div id="question-palette" class="flex flex-col gap-2">
+                    <!-- Render câu hỏi -->
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- SCRIPT CHÍNH -->
+    <script>
+        // --- 1. DỮ LIỆU MOCKUP (ĐÃ CẬP NHẬT VỚI TRẠNG THÁI) ---
+        const mockAssignments = [
+
+            {
+                "assignment_id": 1,
+                "question": "$f(x) = x^2 + 1$ Nhận biết mệnh đề$f(x) = x^2 + 1$ Nhận biết mệnh đề$f(x) = x^2 + 1$ Nhận biết mệnh đề$f(x) = x^2 + 1$ Nhận biết mệnh đề$f(x) = x^2 + 1$ Nhận biết mệnh đề\nA. Lựa chọn $f(x) = x^2 + 1$\tB. Lựa chọn 2\n\nC. Lựa chọn 2\tD. Lựa chọn 2",
+                "solution_guide": "Hướng dẫn giải mẫu cho bài 1.1",
+                "answer": "A",
+                "score": 1,
+                "images": {},
+                "userAnswer": "",   // <-- THÊM MỚI: Trạng thái câu trả lời
+                "timeSpent": 0
+            },
+            {
+                "assignment_id": 2,
+                "question": "$f(x) = x^2 + 1$ Nhận biết mệnh đề\nA. Lựa chọn 1\tB. Lựa chọn 2\n\nC. Lựa chọn 2\tD. Lựa chọn 2",
+                "solution_guide": "Hướng dẫn giải mẫu cho bài 1.1",
+                "answer": "A",
+                "score": 1,
+                "images": {},
+                "userAnswer": "",   // <-- THÊM MỚI: Trạng thái câu trả lời
+                "timeSpent": 0
+            },
+        ];
+
+        // --- 2. TRẠNG THÁI (STATE) CỦA ỨNG DỤNG ---
+        let currentQuestionIndex = 0;
+        let currentQuestionTimerInterval = null; // Biến giữ ID của interval
+        let totalTimerInterval = null; // <-- THÊM MỚI: Biến giữ ID của timer tổng
+        let isSubmitted = false; // <-- MỚI: Cờ (flag) báo đã nộp bài
+        // --- (Đã xóa các mảng state riêng biệt) ---
+
+        // --- 3. LẤY CÁC PHẦN TỬ (ELEMENTS) ---
+        let totalTimerEl, questionTimerEl, questionNumberEl, questionTextEl, answerInputEl, prevBtn, nextBtn, paletteContainer;
+
+        // --- 4. CÁC HÀM XỬ LÝ ---
+
+        /**
+         * Lưu câu trả lời hiện tại và điều hướng đến câu mới
+         * --- HÀM NÀY ĐÃ ĐƯỢC CẬP NHẬT ---
+         */
+        function saveAndNavigate(newIndex) {
+            // 1. Dừng timer của câu CŨ
+            clearInterval(currentQuestionTimerInterval);
+
+            // 2. Lưu câu trả lời VÀO DỮ LIỆU MOCK
+            // --- THAY ĐỔI: Chỉ lưu nếu chưa nộp bài ---
+            if (answerInputEl && !isSubmitted) {
+                mockAssignments[currentQuestionIndex].userAnswer = answerInputEl.value;
+            }
+            // (Thời gian đã được lưu tự động bởi `startQuestionTimer`)
+
+            // 3. Chuyển sang câu MỚI
+            currentQuestionIndex = newIndex;
+
+            // 4. Render câu MỚI (sẽ hiển thị thời gian đã lưu)
+            renderQuestion(currentQuestionIndex);
+
+            // 5. Bắt đầu timer (đếm tiếp) cho câu MỚI
+            // --- THAY ĐỔI: Chỉ bắt đầu timer nếu bài CHƯA nộp ---
+            if (!isSubmitted) {
+                startQuestionTimer(currentQuestionIndex);
+            }
+        }
+
+        // --- BẮT ĐẦU SỬA LỖI ---
+        /**
+         * --- MỚI: Thêm lại hàm renderPalette ---
+         * Hiển thị danh sách câu hỏi trong sidebar
+         */
+        function renderPalette() {
+            if (!paletteContainer) return;
+            paletteContainer.innerHTML = '';
+
+            for (let i = 0; i < mockAssignments.length; i++) {
+                const item = document.createElement('button'); // Dùng <button> để có thể click
+                item.dataset.index = i;
+
+                // 1. Lấy nội dung câu trả lời
+                const answer = mockAssignments[i].userAnswer;
+                // Hiển thị '...' nếu chưa trả lời, giới hạn độ dài nếu trả lời quá dài
+                const answerText = answer ? (answer.length > 10 ? answer.substring(0, 10) + '…' : answer) : '...';
+
+                // 2. Xác định các lớp (class) màu sắc
+                let classes = 'w-full p-3 rounded-lg text-sm font-medium transition-colors flex justify-between items-center text-left';
+
+                if (i === currentQuestionIndex) {
+                    // Câu đang làm: Xanh đậm (primary)
+                    classes += ' bg-primary text-white';
+                } else if (answer) {
+                    // Câu đã làm: Xanh lá (status-active)
+                    classes += ' bg-status-active-bg text-status-active hover:bg-green-200';
+                } else {
+                    // Câu chưa làm: Xám (gray)
+                    classes += ' bg-gray-100 text-text-secondary hover:bg-gray-200';
+                }
+                item.className = classes;
+
+                // 3. Tạo nội dung HTML bên trong nút
+                item.innerHTML = `
+                    <span class="font-semibold">Câu ${i + 1}</span>
+                    <span class="font-mono text-xs px-2 py-1 rounded ${i === currentQuestionIndex ? 'bg-blue-900 bg-opacity-25' : (answer ? 'bg-green-600 bg-opacity-10' : 'bg-gray-500 bg-opacity-10')}">
+                        ${answerText}
+                    </span>
+                `;
+
+                // 4. Gắn sự kiện click
+                item.addEventListener('click', () => {
+                    saveAndNavigate(i);
+                });
+
+                paletteContainer.appendChild(item);
+            }
+        }
+        // --- KẾT THÚC SỬA LỖI ---
+
+        /**
+         * Hàm helper để định dạng giây sang MM:SS (Không đổi)
+         */
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        /**
+         * Bắt đầu đồng hồ đếm tiến cho câu hiện tại
+         * --- HÀM NÀY ĐÃ ĐƯỢC CẬP NHẬT ---
+         */
+        function startQuestionTimer(index) {
+            if (currentQuestionTimerInterval) {
+                clearInterval(currentQuestionTimerInterval);
+            }
+
+            // --- THAY ĐỔI: Chỉ chạy nếu chưa nộp ---
+            if (isSubmitted) return;
+
+            currentQuestionTimerInterval = setInterval(() => {
+                // --- THAY ĐỔI: Cập nhật thời gian trực tiếp vào đối tượng ---
+                mockAssignments[index].timeSpent++;
+
+                if (index === currentQuestionIndex) {
+                    // --- THAY ĐỔI: Đọc thời gian trực tiếp từ đối tượng ---
+                    questionTimerEl.textContent = formatTime(mockAssignments[index].timeSpent);
+                }
+            }, 1000);
+        }
+
+        /**
+         * Hiển thị câu hỏi, câu trả lời, và cập nhật các nút
+         * --- HÀM NÀY ĐÃ ĐƯỢC CẬP NHẬT ---
+         */
+
+
+
+        function renderQuestion(index) {
+            if (index < 0 || index >= mockAssignments.length) return;
+
+            const assign = mockAssignments[index];
+
+            // 1. Cập nhật Giao diện
+            questionNumberEl.innerHTML = `Câu ${index + 1}<span class="text-lg font-medium text-text-secondary">/ ${mockAssignments.length}</span>`;
+            // Render MathJax
+
+            let html = `<div class="pb-2">`;
+
+            // --- Câu hỏi ---
+            if (assign.question) {
+                let raw = `${assign.question}`;
+                //let raw = `**Câu ${index + 1}** **(${assign.score} điểm)** ${assign.question}`;
+                let imageMap = assign.images || {};
+
+                raw = raw.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+                    key = key.trim();
+                    if (imageMap[key]) {
+                        return `<img src="${imageMap[key]}" 
+                         data-key="${key}" 
+                         data-assignment_id="${assign.assignment_id}" 
+                         alt="${key}" 
+                         class="max-w-xs rounded shadow cursor-pointer">`;
+                    }
+                    return match;
+                });
+
+                html += `
+                <div class="question-block"
+                    data-assignment_id="${assign.assignment_id}"
+                    data-type="question">
+                    ${marked.parse(raw)}
+                </div>`;
+            }
+
+
+            const hideSolutions = true;
+            if (assign.solution_guide && !hideSolutions) {
+                html += `
+                <div class="solution-guide-block p-2 border-l-4 border-green-400 bg-green-50 [&_p]:m-0"
+                    data-assignment_id="${assign.assignment_id}"
+                    data-type="solution">
+                    ${marked.parse(assign.solution_guide)}
+                </div>`;
+            }
+
+            html += `</div>`;
+
+            questionContentEl.innerHTML = html;
+
+            const hideAnswers = true;
+            questionContentEl.querySelectorAll("p").forEach(p => {
+                if (/([A-D]\.\s)/.test(p.innerHTML)) {
+                    const match = p.innerHTML.match(/(.*?)([A-D]\..*)/s);
+                    if (!match) return;
+
+                    const questionPart = match[1];
+                    const answerPart = match[2];
+                    const parts = answerPart.split(/&emsp;|(?=[A-D]\.\s)/).filter(Boolean);
+
+                    let innerHTML = `<span>${questionPart}</span>
+                        <div class="flex w-full mt-2 gap-1">`;
+
+                    parts.forEach(part => {
+                        const trimmed = part.trim();
+                        const ansKey = trimmed.substring(0, 1);
+                        const content = trimmed.substring(2).trim();
+                        const isCorrect = assign.answer.includes(ansKey);
+                        const showCorrectIndicator = isCorrect && !hideAnswers;
+
+                        innerHTML += `
+                            <span class="flex items-center gap-2 px-3 py-2 flex-1">
+                            ${showCorrectIndicator
+                                                ? `<span class="w-6 h-6 flex items-center justify-center border-2 border-gray-700 rounded-full font-semibold text-gray-700">${ansKey}</span>`
+                                                : `<span class="font-semibold text-gray-700">${ansKey}.</span>`
+                                            }
+                            <span>${content}</span>
+                            </span>`;
+                    });
+
+                    innerHTML += `</div>`;
+                    p.innerHTML = innerHTML;
+                }
+            });
+
+            if (window.MathJax) {
+                try {
+                    MathJax.typesetPromise([questionContentEl]);
+                } catch (e) {
+                    console.error("Lỗi khi render MathJax: ", e);
+                }
+            }
+
+
+            // --- THAY ĐỔI: Đọc trạng thái từ mockAssignments ---
+            answerInputEl.value = mockAssignments[index].userAnswer || '';
+            questionTimerEl.textContent = formatTime(mockAssignments[index].timeSpent);
+
+            // --- MỚI: Tự động focus vào ô trả lời ---
+            if (answerInputEl) {
+                // --- THAY ĐỔI: Chỉ focus nếu chưa nộp ---
+                if (!isSubmitted) {
+                    answerInputEl.focus();
+                }
+            }
+            // --- HẾT THAY ĐỔI ---
+
+            // 2. Cập nhật trạng thái nút (Không đổi)
+            // --- THAY ĐỔI: Vô hiệu hóa nút nếu đã nộp ---
+            prevBtn.disabled = (index === 0) || isSubmitted;
+            nextBtn.disabled = (index === mockAssignments.length - 1) || isSubmitted;
+
+            // 3. Cập nhật lại sidebar (Không đổi)
+            renderPalette();
+        }
+
+        /**
+         * --- MỚI: Xử lý điều hướng bàn phím (Ctrl + Phím) ---
+         * Hàm này được định nghĩa ở đây để giải quyết lỗi ReferenceError
+         */
+        function handleKeyNavigation(event) {
+
+            // --- THAY ĐỔI: Không làm gì nếu đã nộp ---
+            if (isSubmitted) return;
+
+            // Kiểm tra xem phím Ctrl (Windows) hoặc Command (Mac) có được nhấn không
+            const isCtrlPressed = event.ctrlKey || event.metaKey;
+
+            // Nếu phím Ctrl KHÔNG được nhấn,
+            // thì bỏ qua, để phím Lên/Xuống/Trái/Phải hoạt động bình thường (di chuyển con trỏ)
+            if (!isCtrlPressed) {
+                return;
+            }
+
+            // Nếu phím Ctrl ĐƯỢC nhấn, thì mới xét chuyển câu
+            switch (event.key) {
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    event.preventDefault(); // Ngăn các hành vi mặc định của trình duyệt
+                    if (prevBtn && !prevBtn.disabled) { // Thêm kiểm tra 'prevBtn'
+                        saveAndNavigate(currentQuestionIndex - 1);
+                    }
+                    break;
+
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    event.preventDefault(); // Ngăn các hành vi mặc định của trình duyệt
+                    if (nextBtn && !nextBtn.disabled) { // Thêm kiểm tra 'nextBtn'
+                        saveAndNavigate(currentQuestionIndex + 1);
+                    }
+                    break;
+            }
+        }
+        // --- KẾT THÚC SỬA LỖI ---
+
+
+        // --- 5. KHỞI CHẠY ỨNG DỤNG ---
+        document.addEventListener('DOMContentLoaded', () => {
+
+            totalTimerEl = document.getElementById('total-timer');
+            questionTimerEl = document.getElementById('question-timer');
+            questionNumberEl = document.getElementById('question-number');
+            questionContentEl = document.getElementById('question-content');
+            answerInputEl = document.getElementById('answer-input');
+            prevBtn = document.getElementById('prev-question-btn');
+            nextBtn = document.getElementById('next-question-btn');
+            paletteContainer = document.getElementById('question-palette');
+
+            // --- MỚI: Lấy các phần tử của modal ---
+            const submitBtn = document.querySelector('header button'); // Nút "Nộp bài" trên header
+            const submitModal = document.getElementById('submitModal');
+            const cancelSubmitBtn = document.getElementById('cancelSubmitBtn');
+            const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
+            // --- HẾT PHẦN MỚI ---
+
+
+            // --- (listener của prevBtn và nextBtn giữ nguyên) ---
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    saveAndNavigate(currentQuestionIndex - 1);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentQuestionIndex < mockAssignments.length - 1) {
+                    saveAndNavigate(currentQuestionIndex + 1);
+                }
+            });
+
+            // --- MỚI: Gắn sự kiện cho Modal ---
+            if (submitBtn && submitModal && cancelSubmitBtn && confirmSubmitBtn) {
+
+                // 1. Mở modal khi nhấn "Nộp bài"
+                submitBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); // Ngăn hành vi mặc định (nếu có)
+
+                    // Lưu câu trả lời cuối cùng trước khi mở modal
+                    if (answerInputEl && !isSubmitted) {
+                        mockAssignments[currentQuestionIndex].userAnswer = answerInputEl.value;
+                    }
+                    renderPalette(); // Cập nhật palette một lần nữa
+
+                    submitModal.classList.remove('hidden');
+                });
+
+                // 2. Đóng modal khi nhấn "Hủy"
+                cancelSubmitBtn.addEventListener('click', () => {
+                    submitModal.classList.add('hidden');
+                });
+
+                // 3. Xử lý khi nhấn "Nộp bài" trong modal
+                confirmSubmitBtn.addEventListener('click', () => {
+                    console.log('--- BÀI THI ĐÃ ĐƯỢC NỘP ---');
+                    // In ra toàn bộ câu trả lời và thời gian
+                    console.log(JSON.stringify(mockAssignments, null, 2));
+
+                    submitModal.classList.add('hidden');
+                    isSubmitted = true; // <-- MỚI: Đặt cờ là đã nộp
+
+                    // Vô hiệu hóa mọi thứ sau khi nộp
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = true;
+                    answerInputEl.disabled = true;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Đã nộp';
+
+                    // Dừng tất cả các timer
+                    clearInterval(currentQuestionTimerInterval);
+                    clearInterval(totalTimerInterval);
+
+                    // --- BỎ LOGIC VÔ HIỆU HÓA PALETTE ---
+                    // (Phần code vô hiệu hóa palette đã bị xóa)
+                    // --- HẾT PHẦN BỎ ---
+
+                    // Hiển thị thông báo đã nộp bài
+                    if (totalTimerEl) {
+                        totalTimerEl.innerHTML = '<span class="text-2xl font-bold text-status-active">ĐÃ NỘP BÀI</span>';
+                        totalTimerEl.parentElement.classList.remove('bg-red-100', 'border-red-200', 'text-red-700');
+                        totalTimerEl.parentElement.classList.add('bg-status-active-bg', 'border-green-200', 'text-status-active');
+                        // Cập nhật lại icon
+                        const icon = totalTimerEl.parentElement.querySelector('i');
+                        if (icon) {
+                            icon.className = 'bi bi-check-circle-fill w-6 h-6';
+                        }
+                    }
+                });
+            }
+            // --- HẾT PHẦN MỚI ---
+
+            // --- (Hàm handleKeyNavigation giữ nguyên) --- // <-- Xóa comment này
+            // Gắn sự kiện vào toàn bộ trang
+            document.addEventListener('keydown', handleKeyNavigation);
+            // --- HẾT PHẦN MỚI ---
+
+            // Tải câu hỏi đầu tiên
+            renderQuestion(currentQuestionIndex);
+
+            // Bắt đầu timer cho câu đầu tiên
+            // --- THAY ĐỔI: Chỉ bắt đầu nếu chưa nộp ---
+            if (!isSubmitted) {
+                startQuestionTimer(currentQuestionIndex);
+            }
+
+            // --- MỚI: Tự động focus khi mới tải trang ---
+            // --- THAY ĐỔI: Chỉ focus nếu chưa nộp ---
+            if (answerInputEl && !isSubmitted) {
+                answerInputEl.focus();
+            }
+            // --- HẾT PHẦN MỚI ---
+
+            // Code đồng hồ bấm giờ TỔNG (giữ nguyên)
+            let totalSeconds = 45 * 60;
+            if (totalTimerEl) {
+                // --- THAY ĐỔI: Gán vào biến toàn cục ---
+                totalTimerInterval = setInterval(() => {
+                    // --- THAY ĐỔI: Dừng nếu đã nộp ---
+                    if (isSubmitted) {
+                        clearInterval(totalTimerInterval);
+                        return;
+                    }
+
+                    totalSeconds--;
+                    if (totalSeconds <= 0) {
+                        clearInterval(totalTimerInterval);
+                        totalTimerEl.textContent = "00:00";
+                        // Tự động nộp bài khi hết giờ
+                        if (!submitBtn.disabled) { // Chỉ nộp nếu chưa nộp
+                            confirmSubmitBtn.click(); // Giả lập hành vi nộp bài
+                        }
+                        return;
+                    }
+                    const minutes = Math.floor(totalSeconds / 60);
+                    const seconds = totalSeconds % 60;
+                    totalTimerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }, 1000);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

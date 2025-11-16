@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup - Giao Bài Tập</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        // Tái sử dụng theme màu từ các file trước của bạn
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e5eff',
+                        'text-primary': '#121212',
+                        'text-secondary': '#5a607f',
+                        'text-muted': '#a1a7c4',
+                        'border-light': '#e6e9f4',
+                        'border-medium': '#d9e1ec',
+                        'border-checkbox': '#d7dbec',
+                        'bg-light': '#f5f6fa',
+                        'status-active': '#06a561',
+                        'status-active-bg': '#defef0',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'inter', sans-serif;
+            background-color: #f0f2f5; /* bg-light */
+        }
+        /* Tùy chỉnh thanh cuộn cho đẹp hơn */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #d9e1ec; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a7c4; }
+
+        /* Đảm bảo input datetime-local hiển thị icon lịch */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-10">
+
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg border border-border-light">
+        <!-- Header -->
+        <div class="border-b border-border-light px-6 py-5">
+            <h1 class="text-2xl font-semibold text-text-primary">Giao Bài Tập</h1>
+            <p class="text-text-secondary text-sm mt-1">Cấu hình và gửi bài tập này cho các lớp của bạn.</p>
+        </div>
+
+        <!-- Form Content -->
+        <div class="p-6 md:p-8 space-y-6">
+
+            <!-- MỚI: Tên Bài Tập -->
+            <div>
+                <label for="assignment-name" class="block text-sm font-medium text-text-primary mb-2">Tên bài tập</label>
+                <input type="text" id="assignment-name" class="w-full h-10 px-3 py-2 bg-white border border-border-light rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Ví dụ: Bài ôn tập Chương 1">
+                <!-- MỚI: Thêm thông báo lỗi -->
+                <p id="assignment-name-error" class="text-red-500 text-sm mt-1 hidden">Vui lòng nhập tên bài tập.</p>
+            </div>
+            <!-- Hết phần mới -->
+
+            <!-- 1. Chọn Lớp Học (Dạng Checkbox tốt hơn Dropdown) -->
+            <div>
+                <label class="block text-sm font-medium text-text-primary mb-2">Giao cho Lớp</label>
+                <div id="class-list" class="border border-border-light rounded-lg max-h-48 overflow-y-auto p-4 space-y-3">
+                    <!-- Mục chọn tất cả -->
+                    <div class="flex items-center">
+                        <input id="class-all" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="class-all" class="ml-3 text-sm font-medium text-text-primary">Tất cả các lớp</label>
+                    </div>
+                    <hr class="border-border-light">
+                    <!-- Các lớp học mock -->
+                    <div class="flex items-center">
+                        <input id="class-12a1" name="class-item" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="class-12a1" class="ml-3 text-sm text-text-secondary">Lớp 12A1</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="class-12a2" name="class-item" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="class-12a2" class="ml-3 text-sm text-text-secondary">Lớp 12A2</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="class-11b2" name="class-item" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="class-11b2" class="ml-3 text-sm text-text-secondary">Lớp 11B2</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="class-10c1" name="class-item" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <!-- SỬA LỖI: Đã sửa </g> thành </label> -->
+                        <label for="class-10c1" class="ml-3 text-sm text-text-secondary">Lớp 10C1</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Chọn Đối Tượng -->
+            <div>
+                <label for="target-student" class="block text-sm font-medium text-text-primary mb-2">Đối tượng học sinh</label>
+                <!-- THAY THẾ: Chuyển <select> thành <div> chứa các checkbox -->
+                <div id="student-list" class="border border-border-light rounded-lg p-4 space-y-3">
+                    <div class="flex items-center">
+                        <input id="student-all" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="student-all" class="ml-3 text-sm text-text-secondary">Học sinh cả lớp</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="student-good" name="student-group" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="student-good" class="ml-3 text-sm text-text-secondary">Học sinh giỏi</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="student-average" name="student-group" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="student-average" class="ml-3 text-sm text-text-secondary">Học sinh khá</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="student-basic" name="student-group" type="checkbox" class="h-4 w-4 rounded border-border-checkbox text-primary focus:ring-primary">
+                        <label for="student-basic" class="ml-3 text-sm text-text-secondary">Học sinh trung bình</label>
+                    </div>
+                </div>
+                <!-- KẾT THÚC THAY THẾ -->
+            </div>
+
+            <!-- 3. Cài đặt Thời Gian -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                <!-- Thời gian bắt đầu -->
+                <div>
+                    <label for="start-time" class="block text-sm font-medium text-text-primary mb-2">Thời gian bắt đầu</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="bi bi-calendar-event text-text-muted"></i>
+                        </span>
+                        <input type="datetime-local" id="start-time" class="w-full h-10 pl-10 pr-3 py-2 bg-white border border-border-light rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
+
+                <!-- Thời gian kết thúc -->
+                <div>
+                    <label for="end-time" class="block text-sm font-medium text-text-primary mb-2">Thời gian kết thúc</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="bi bi-calendar-check text-text-muted"></i>
+                        </span>
+                        <input type="datetime-local" id="end-time" class="w-full h-10 pl-10 pr-3 py-2 bg-white border border-border-light rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
+
+                <!-- Thời gian làm bài -->
+                <div class="md:col-span-2">
+                    <label for="duration" class="block text-sm font-medium text-text-primary mb-2">Thời gian làm bài (phút)</label>
+                     <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="bi bi-clock text-text-muted"></i>
+                        </span>
+                        <input type="number" id="duration" class="w-full h-10 pl-10 pr-3 py-2 bg-white border border-border-light rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Ví dụ: 45">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Tùy Chọn (Toggle Switches) -->
+            <div class="space-y-4 pt-4 border-t border-border-light">
+                <!-- MỚI: Đảo câu hỏi -->
+                <div class="flex items-center justify-between">
+                    <label for="shuffle-questions" class="text-sm font-medium text-text-primary">Đảo thứ tự câu hỏi?</label>
+                    <button type="button" id="shuffle-questions" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" role="switch" aria-checked="false">
+                        <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                    </button>
+                </div>
+                <!-- Hết phần mới -->
+
+                <!-- --- BẮT ĐẦU THAY THẾ BẰNG THIẾT KẾ MỚI --- -->
+                
+                <!-- Xóa 2 nút toggle cũ và thay bằng khối radio button -->
+                
+                <!-- BẮT ĐẦU THIẾT KẾ LẠI: Điểm và Đáp án -->
+                <div class="pt-4 space-y-3">
+                    <h4 class="text-sm font-semibold text-text-primary">Điểm và đáp án khi làm xong</h4>
+                    
+                    <!-- Sử dụng grid để chia 2 cột cho cân đối -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 pt-2">
+                        
+                        <!-- Cột 1: Cho xem điểm -->
+                        <div class="space-y-3">
+                            <label class="text-sm font-medium text-text-primary">Cho xem điểm</label>
+                            <!-- Các lựa chọn radio cho Cột 1 -->
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input id="score-opt-1" name="score-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary">
+                                    <label for="score-opt-1" class="ml-2 text-sm text-text-secondary">Không</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="score-opt-2" name="score-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary" checked>
+                                    <label for="score-opt-2" class="ml-2 text-sm text-text-secondary">Khi làm bài xong</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="score-opt-3" name="score-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary">
+                                    <label for="score-opt-3" class="ml-2 text-sm text-text-secondary">Khi tất cả thi xong</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cột 2: Cho xem đề và đáp án -->
+                        <div class="space-y-3">
+                            <label class="text-sm font-medium text-text-primary">Cho xem đề và đáp án</label>
+                            <!-- Các lựa chọn radio cho Cột 2 -->
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input id="answer-opt-1" name="answer-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary">
+                                    <label for="answer-opt-1" class="ml-2 text-sm text-text-secondary">Không</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="answer-opt-2" name="answer-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary" checked>
+                                    <label for="answer-opt-2" class="ml-2 text-sm text-text-secondary">Khi làm bài xong</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="answer-opt-3" name="answer-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary">
+                                    <label for="answer-opt-3" class="ml-2 text-sm text-text-secondary">Khi tất cả thi xong</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="answer-opt-4" name="answer-visibility" type="radio" class="h-4 w-4 border-border-checkbox text-primary focus:ring-primary">
+                                    <label for="answer-opt-4" class="ml-2 text-sm text-text-secondary">Khi đạt số điểm nhất định</label>
+                                </div>
+                                <!-- MỚI: Input điểm điều kiện -->
+                                <div id="score-threshold-container" class="relative pl-6 hidden pt-2">
+                                    <input type="number" id="score-threshold" class="w-full max-w-[120px] h-9 px-3 py-2 bg-white border border-border-light rounded-lg text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Nhập điểm">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- KẾT THÚC THIẾT KẾ LẠI -->
+                <!-- --- KẾT THÚC THAY THẾ --- -->
+
+            </div>
+        </div>
+
+        <!-- Footer (Buttons) -->
+        <div class="border-t border-border-light px-6 py-4 bg-gray-50 flex justify-end gap-3 rounded-b-xl">
+            <button class="bg-white border border-border-light text-text-secondary px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
+                Hủy
+            </button>
+            <!-- MỚI: Thêm id="submit-assignment" -->
+            <button id="submit-assignment" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                <i class="bi bi-send mr-1"></i>
+                Giao Bài
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // === LOGIC CHO TOGGLE SWITCH ===
+        document.querySelectorAll('button[role="switch"]').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const isChecked = toggle.getAttribute('aria-checked') === 'true';
+                const span = toggle.querySelector('span');
+
+                if (isChecked) {
+                    toggle.setAttribute('aria-checked', 'false');
+                    toggle.classList.remove('bg-primary');
+                    toggle.classList.add('bg-gray-200');
+                    span.classList.remove('translate-x-5');
+                    span.classList.add('translate-x-0');
+                } else {
+                    toggle.setAttribute('aria-checked', 'true');
+                    toggle.classList.remove('bg-gray-200');
+                    toggle.classList.add('bg-primary');
+                    span.classList.remove('translate-x-0');
+                    span.classList.add('translate-x-5');
+                }
+            });
+        });
+
+        // === LOGIC CHO CHECKBOX "CHỌN TẤT CẢ" ===
+
+        // 1. Chọn tất cả LỚP HỌC
+        const classSelectAll = document.getElementById('class-all');
+        const classItems = document.querySelectorAll('input[name="class-item"]');
+        const classListContainer = document.getElementById('class-list');
+
+        classSelectAll.addEventListener('change', (e) => {
+            classItems.forEach(item => {
+                item.checked = e.target.checked;
+            });
+        });
+
+        // Thêm listener cho từng checkbox con để cập nhật lại "chọn tất cả"
+        classListContainer.addEventListener('change', (e) => {
+            if (e.target.name === 'class-item') {
+                let allChecked = true;
+                classItems.forEach(item => {
+                    if (!item.checked) {
+                        allChecked = false;
+                    }
+                });
+                classSelectAll.checked = allChecked;
+            }
+        });
+
+        // 2. Chọn tất cả ĐỐI TƯỢNG HỌC SINH
+        const studentSelectAll = document.getElementById('student-all');
+        const studentGroups = document.querySelectorAll('input[name="student-group"]');
+        const studentListContainer = document.getElementById('student-list');
+
+        studentSelectAll.addEventListener('change', (e) => {
+            studentGroups.forEach(item => {
+                item.checked = e.target.checked;
+            });
+        });
+
+        // Thêm listener cho từng checkbox con
+        studentListContainer.addEventListener('change', (e) => {
+            if (e.target.name === 'student-group') {
+                let allChecked = true;
+                studentGroups.forEach(item => {
+                    if (!item.checked) {
+                        allChecked = false;
+                    }
+                });
+                studentSelectAll.checked = allChecked;
+            }
+        });
+
+        // === LOGIC CHO HIỂN THỊ ĐIỂM ĐIỀU KIỆN ===
+        const answerRadioButtons = document.querySelectorAll('input[name="answer-visibility"]');
+        const scoreThresholdContainer = document.getElementById('score-threshold-container');
+        const answerOpt4 = document.getElementById('answer-opt-4');
+
+        answerRadioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (answerOpt4.checked) {
+                    scoreThresholdContainer.classList.remove('hidden');
+                } else {
+                    scoreThresholdContainer.classList.add('hidden');
+                }
+            });
+        });
+
+        // === LOGIC VALIDATE TÊN BÀI TẬP (BẮT BUỘC) ===
+        const assignmentNameInput = document.getElementById('assignment-name');
+        const assignmentNameError = document.getElementById('assignment-name-error');
+        const submitButton = document.getElementById('submit-assignment');
+
+        // Hàm để kiểm tra validation
+        function validateAssignmentName() {
+            const value = assignmentNameInput.value.trim();
+            if (value === '') {
+                // Hiển thị lỗi
+                assignmentNameError.classList.remove('hidden');
+                assignmentNameInput.classList.add('border-red-500', 'focus:ring-red-500');
+                assignmentNameInput.classList.remove('border-border-light', 'focus:ring-primary');
+                return false; // Không hợp lệ
+            } else {
+                // Ẩn lỗi
+                assignmentNameError.classList.add('hidden');
+                assignmentNameInput.classList.remove('border-red-500', 'focus:ring-red-500');
+                assignmentNameInput.classList.add('border-border-light', 'focus:ring-primary');
+                return true; // Hợp lệ
+            }
+        }
+
+        // 1. Kiểm tra khi nhấn nút "Giao Bài"
+        submitButton.addEventListener('click', (e) => {
+            const isNameValid = validateAssignmentName();
+            
+            if (!isNameValid) {
+                e.preventDefault(); // Ngăn hành động mặc định (nếu có)
+                console.log("Validation failed: Tên bài tập là bắt buộc.");
+                // Focus vào trường bị lỗi
+                assignmentNameInput.focus();
+            } else {
+                // (Đây là nơi xử lý logic giao bài thật)
+                console.log("Validation passed. Đang tiến hành giao bài...");
+                // Ví dụ: alert("Đã giao bài!"); // Không dùng alert, chỉ là ví dụ
+            }
+        });
+
+        // 2. Xóa lỗi khi người dùng bắt đầu nhập hoặc focus
+        assignmentNameInput.addEventListener('input', () => {
+            // Nếu có giá trị thì mới validate để xóa lỗi
+            if (assignmentNameInput.value.trim() !== '') {
+                validateAssignmentName();
+            }
+        });
+        
+        // 3. Xóa lỗi khi người dùng click ra ngoài (blur) mà đã điền
+        assignmentNameInput.addEventListener('blur', () => {
+             validateAssignmentName();
+        });
+
+    </script>
+
+</body>
+</html>

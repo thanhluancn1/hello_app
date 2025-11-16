@@ -20,11 +20,10 @@ window.APP_MOCK_DATA = {
     const exam_suggestion_data = [{
       "lesson_id": 1, 
       "lesson_name": "Bài học tổng hợp về Mệnh đề, Tập hợp, Hàm số và Vector",
-      
       "assignment_batches": [
         {
           "batch_id": 1,
-          "batch_name": "Batch 1: Ôn tập Chương 1 (Cơ bản)",
+          "batch_name": "Ôn tập Chương 1 (Cơ bản)",
           "target_student": "học sinh cả lớp",
           
           "recognition": 5,
@@ -36,6 +35,9 @@ window.APP_MOCK_DATA = {
           "fill_in_blank": 0,
           "total_questions": 10,
           "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z",
     
           "knowledge_components": [
             {
@@ -59,7 +61,7 @@ window.APP_MOCK_DATA = {
                 // ===== BẮT ĐẦU SỬA ĐỔI =====
                 { 
                   "assignment_id": 1, 
-                  "question": "Bài 1.1: Nhận biết mệnh đề\nA. Lựa chọn 1\tB. Lựa chọn 2",
+                  "question": "Bài 1.1: $f(x) = x^2 + 1$ Nhận biết mệnh đề\nA. Lựa chọn 1\tB. Lựa chọn 2\n\nC. Lựa chọn 2\tD. Lựa chọn 2",
                   "solution_guide": "Hướng dẫn giải mẫu cho bài 1.1",
                   "answer": "A",
                   "score": 1,
@@ -166,7 +168,7 @@ window.APP_MOCK_DATA = {
         },
         {
           "batch_id": 2,
-          "batch_name": "Batch 2: Chuyên đề Hàm số và Vector (Nâng cao)",
+          "batch_name": "Chuyên đề Hàm số và Vector (Nâng cao)",
           "target_student": "học sinh giỏi",
           
           "recognition": 1,
@@ -178,6 +180,9 @@ window.APP_MOCK_DATA = {
           "fill_in_blank": 0,
           "total_questions": 8,
           "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z",
     
           "knowledge_components": [
             {
@@ -296,7 +301,162 @@ window.APP_MOCK_DATA = {
     return exam_suggestion_data;
   },
 
+  getAllClassExams: function () {
+    const class_exam_data = [{
+      
+      "class_id": 1, 
+      "class_name": "Bài học tổng hợp về Mệnh đề, Tập hợp, Hàm số và Vector",
+      "class_name": 'Lớp 12A1',
+      "start_year": 2024,
+      "end_year": 2025,
+      "student_count": 40,
 
+      "assignment_batches": [
+        {
+          "batch_id": 1,
+          "batch_name": "Ôn tập Chương 1 (Cơ bản)",
+          "target_student": "học sinh cả lớp",
+          
+          "recognition": 5,
+          "understanding": 3,
+          "application": 2,
+          "multiple_choice": 8,
+          "essay": 2,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 10,
+          "total_points": 100,
+
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        },
+        {
+          "batch_id": 2,
+          "batch_name": "Chuyên đề Hàm số và Vector (Nâng cao)",
+          "target_student": "học sinh giỏi",
+          
+          "recognition": 1,
+          "understanding": 3,
+          "application": 4,
+          "multiple_choice": 4,
+          "essay": 4,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 8,
+          "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        },
+        {
+          "batch_id": 3,
+          "batch_name": "Tổng hợp Chuyên đề Hàm số và Vector (Nâng cao)",
+          "target_student": "học sinh giỏi",
+          
+          "recognition": 1,
+          "understanding": 3,
+          "application": 4,
+          "multiple_choice": 4,
+          "essay": 4,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 8,
+          "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        },
+        {
+          "batch_id": 4,
+          "batch_name": "Chuyên đề Hàm số và Vector (Nâng cao)",
+          "target_student": "học sinh giỏi",
+          
+          "recognition": 1,
+          "understanding": 3,
+          "application": 4,
+          "multiple_choice": 4,
+          "essay": 4,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 8,
+          "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        }
+      ]
+    },
+    {
+      
+      "class_id": 2, 
+      "class_name": "Bài học tổng hợp về Mệnh đề, Tập hợp, Hàm số và Vector",
+      "class_name": 'Lớp 12A2',
+      "start_year": 2024,
+      "end_year": 2025,
+      "student_count": 40,
+
+      "assignment_batches": [
+        {
+          "batch_id": 1,
+          "batch_name": "Ôn tập Chương 1 (Cơ bản)",
+          "target_student": "học sinh cả lớp",
+          
+          "recognition": 5,
+          "understanding": 3,
+          "application": 2,
+          "multiple_choice": 8,
+          "essay": 2,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 10,
+          "total_points": 100,
+
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        },
+        {
+          "batch_id": 2,
+          "batch_name": "Chuyên đề Hàm số và Vector (Nâng cao)",
+          "target_student": "học sinh giỏi",
+          
+          "recognition": 1,
+          "understanding": 3,
+          "application": 4,
+          "multiple_choice": 4,
+          "essay": 4,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 8,
+          "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        },
+        {
+          "batch_id": 3,
+          "batch_name": "Tổng hợp Chuyên đề Hàm số và Vector (Nâng cao)",
+          "target_student": "học sinh giỏi",
+          
+          "recognition": 1,
+          "understanding": 3,
+          "application": 4,
+          "multiple_choice": 4,
+          "essay": 4,
+          "true_false": 0,
+          "fill_in_blank": 0,
+          "total_questions": 8,
+          "total_points": 100,
+          "batch_status": "Đang diễn ra",
+          "start_date": "2025-10-25T10:00:00Z",
+          "due_date": "2025-10-25T10:30:00Z"
+        }
+      ]
+    }
+    ];
+    return class_exam_data;
+  },
   /**
    * 3. DỮ LIỆU VÀ HÀM LỌC TỪ `knowledge_data.json`
    * (Đã hard code ID toàn cục theo yêu cầu trước)

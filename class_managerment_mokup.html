@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - Modernize (Dynamic V2)</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1e5eff',
+                        'text-primary': '#121212',
+                        'text-secondary': '#5a607f',
+                        'text-muted': '#a1a7c4',
+                        'border-light': '#e6e9f4',
+                        'border-medium': '#d9e1ec',
+                        'border-checkbox': '#d7dbec',
+                        'bg-light': '#f5f6fa',
+                        'status-active': '#06a561',
+                        'status-active-bg': '#defef0',
+                        'status-inactive': '#ff5c5c',
+                        'status-inactive-bg': '#ffdfdf'
+                    },
+                    fontFamily: {
+                        'roboto': ['Roboto', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                        'gilroy': ['Gilroy', 'sans-serif'],
+                        'manrope': ['Manrope', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="./mock_data_central.js"></script>
+    <script src="./state.js"></script>
+
+</head>
+<body>
+    <main class="p-6">
+        <div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h1 class="text-2xl font-medium font-roboto text-text-primary leading-8">
+                    Quản lý bài tập
+                </h1>
+                
+                <div class="flex gap-3">
+                    <button class="flex items-center gap-1 bg-primary text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="bi bi-plus-lg w-6 h-6"></i>
+                        <span class="text-sm font-medium">Thêm bài tập</span>
+                    </button>
+                    
+                    <button class="flex items-center justify-center w-10 h-10 bg-white border border-border-light rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="bi bi-trash w-6 h-6 text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="flex flex-col gap-6">
+                <div id="card-container" class="flex flex-col gap-6">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- BẮT ĐẦU SCRIPT TẠO LAYOUT ĐỘNG ---
+
+        const class_exam_data = window.APP_MOCK_DATA.getAllClassExams();
+  
+        // 2. HÀM TẠO CARD (TEMPLATE)
+
+        /**
+         * Tạo HTML cho card Lớp học
+         * (Hàm này không cần thay đổi vì tên thuộc tính vẫn khớp)
+         */
+     
+
+        const createAssignmentCard = (item) => {
+            const batchName = item.batch_name;
+            const totalQuestions = item.total_questions; 
+
+            const startDateObj = new Date(item.start_date);
+            const endDateObj = new Date(item.due_date);
+            const diffMs = endDateObj - startDateObj;
+            const duration_minutes = Math.round(diffMs / 60000); 
+
+            const formatSchedule = (startStr, endStr) => {
+                const optionsTime = { hour: '2-digit', minute: '2-digit' };
+                const optionsDate = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                const startDate = new Date(startStr);
+                const endDate = new Date(endStr);
+                const startTime = startDate.toLocaleTimeString('vi-VN', optionsTime);
+                const endTime = endDate.toLocaleTimeString('vi-VN', optionsTime);
+                const day = startDate.toLocaleDateString('vi-VN', optionsDate);
+                return `${startTime} - ${endTime} ${day}`;
+            };
+            const schedule = formatSchedule(item.start_date, item.due_date);
+
+            // Template cho card bài tập (không thay đổi)
+            return `
+            <div class="bg-white border border-border-light rounded-xl p-6 cursor-pointer hover:shadow-md transition-shadow">
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold font-inter text-text-secondary leading-5">
+                            ${batchName}
+                        </h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-1">
+                            <i class="bi bi-question-circle w-5 h-5 text-gray-600"></i>
+                            <span class="text-sm font-medium font-inter text-text-secondary">
+                                ${totalQuestions} câu hỏi
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="bi bi-clock w-5 h-5 text-gray-600"></i>
+                            <span class="text-sm font-medium font-inter text-text-secondary">
+                                ${duration_minutes} phút
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="bi bi-calendar-event w-5 h-5 text-gray-600"></i>
+                            <span class="text-sm font-medium font-inter text-text-secondary">
+                                ${schedule}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        };
+
+        // 3. HÀM KHỞI TẠO VÀ RENDER (LOGIC MỚI)
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('card-container');
+            
+            if (!container) {
+                console.error('Không tìm thấy container #card-container');
+                return;
+            }
+
+            // Xóa nội dung HTML cũ (nếu có)
+            container.innerHTML = '';
+
+            // Lặp qua từng LỚP HỌC
+            class_exam_data.forEach(cls => {
+                
+                // 1. Tạo một 'group wrapper' cho mỗi lớp
+                const groupWrapper = document.createElement('div');
+                // Thêm style cho group (card lớn bao ngoài)
+                groupWrapper.className = 'w-full bg-white border border-border-light rounded-xl p-6';
+
+                // 2. Tạo HTML cho Tiêu đề (Header) của lớp học
+                const headerHtml = `
+                    <div class="">
+                        <h3 class="text-xl font-semibold font-inter text-text-primary">
+                            ${cls.class_name}
+                        </h3>
+                    </div>
+                `;
+
+                // 3. Tạo HTML cho Grid các bài tập
+                let assignmentsGridHtml = `
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                `; // <-- Grid 4 cột RESPONSIVE
+
+                // 4. Lặp qua các bài tập và thêm vào grid
+                if (cls.assignment_batches.length > 0) {
+                    cls.assignment_batches.forEach(asg => {
+                        assignmentsGridHtml += createAssignmentCard(asg);
+                    });
+                } else {
+                    // Trường hợp lớp không có bài tập
+                    assignmentsGridHtml += `
+                        <p class="text-text-secondary italic col-span-full">
+                            Không có bài tập nào trong lớp này.
+                        </p>
+                    `;
+                }
+                
+                assignmentsGridHtml += '</div>'; // Đóng grid
+
+                // 5. Gán HTML vào group wrapper
+                groupWrapper.innerHTML = headerHtml + assignmentsGridHtml;
+
+                // 6. Thêm group wrapper vào container chính
+                container.appendChild(groupWrapper);
+            });
+        });
+
+    </script>
+</body>
+</html>

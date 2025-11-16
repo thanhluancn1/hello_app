@@ -21,6 +21,12 @@ window.APP_STATE = (function() {
   let _knowledgeData = null;
   let _knowledgeSourceData = null; // Biến lưu data thô
   let _knowledgeComponents = null;
+  let _classExamData = null;
+
+  const getClassExamData = () => _classExamData;
+  const setClassExamData = (newClassExamData) => {
+    _classExamData = newClassExamData;
+  };
 
   const getKnowledgeComponents = () => _knowledgeComponents;
   const setKnowledgeComponents = (newKnowledgeComponents) => {
@@ -243,6 +249,9 @@ window.APP_STATE = (function() {
     
     getExamSuggestions,
     setExamSuggestions,
+
+    getClassExamData,
+    setClassExamData,
 
     setAssignmentsFromBatchId,
 
